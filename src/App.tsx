@@ -23,7 +23,6 @@ const initialize = () => {
     }
     res.push(row);
   }
-  console.log(res);
   _grid.push(...res);
 };
 
@@ -57,7 +56,7 @@ const cellReducer = (state: CellGrid, action: UpdateCellAction): CellGrid => {
 function App() {
   const [grid, dispatch] = useReducer(cellReducer, _grid);
 
-  // Function to update a cell in the cell grid
+  // Function to update a cell in the grid
   // Parameters:
   // - row: The row index of the cell to be updated.
   // - col: The column index of the cell to be updated.
