@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { CellGrid, Cell, CellType, CellStyles, CellActions } from "./ts/cell";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
@@ -28,6 +28,7 @@ const initialize = () => {
 
 initialize();
 
+// Defines the action used on the reducer for updating the state of a cell in the grid
 interface UpdateCellAction {
   type: CellActions.UpdateCell;
   payload: {
@@ -70,20 +71,37 @@ function App() {
   };
 
   useEffect(() => {
+    // set start cell to 0, 0 and some arbitrary cell to finish
     updateCell(0, 0, CellStyles.Start);
+    updateCell(Math.floor(ROWS / 2), Math.floor(COLS / 2), CellStyles.Finish);
   }, []);
 
   return (
     <>
-      <div className="gridWrapper">
-        {grid.map((row, index) =>
-          row.map((item, _index) => (
-            <CellNode
-              key={`${item.posRow}-${item.posCol}`}
-              cellStyles={item.cellStyle}
-            ></CellNode>
-          ))
-        )}
+      <div className="wrapper">
+        <div className="navbar">
+          <div className="dropdown">
+            <button className="dropbtn">(Select Algorithm)</button>
+            <div className="dropdown-content">
+              <div className="dropdown-item">Dijkstra</div>
+              <div className="dropdown-item">A*</div>
+              <div className="dropdown-item">Algorithm 3</div>
+              <div className="dropdown-item">Algorithm 4</div>
+              <div className="dropdown-item">Algorithm 5</div>
+            </div>
+          </div>
+          <button className="visualize-btn">Button</button>
+        </div>
+        <div className="gridWrapper">
+          {grid.map((row, index) =>
+            row.map((item, _index) => (
+              <CellNode
+                key={`${item.posRow}-${item.posCol}`}
+                cellStyles={item.cellStyle}
+              ></CellNode>
+            ))
+          )}
+        </div>
       </div>
     </>
   );
