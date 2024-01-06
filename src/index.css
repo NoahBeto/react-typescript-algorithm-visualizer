@@ -9,7 +9,11 @@
   --accent: #3b93f7;
   --text: #cee4fd;
   --static3: rgba(255, 255, 255, 0.03);
-  display: flex;
-  justify-content: center;
+  --static5: rgba(255, 255, 255, 0.05);
+}
+
+body {
+  height: 100vh;
   background: var(--bg);
+  margin: 0;
 }
