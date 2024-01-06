@@ -1,0 +1,15 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #010e1e;
+  --primary: #074fa2;
+  --secondary: #043062;
+  --accent: #3b93f7;
+  --text: #cee4fd;
+  --static3: rgba(255, 255, 255, 0.03);
+  display: flex;
+  justify-content: center;
+  background: var(--bg);
+}
