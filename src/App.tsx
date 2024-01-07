@@ -1,32 +1,27 @@
 import { useEffect, useReducer } from "react";
-import { CellGrid, Cell, CellType, CellStyles, CellActions } from "./ts/cell";
+import { GraphHelper, GraphType, CellStyles, CellActions } from "./ts/cell";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
 
 const ROWS = 5;
+
+// ---------------------------------------------------------
+// DO NOT CHANGE!!!
+// TODO: Make columns dynamic. As of now, must be hard coded
+//       because of CSS styling
 const COLS = 40;
-const _grid: CellGrid = [];
+// ---------------------------------------------------------
 
-// Initializes cell grid using ROWS and COLS constants with Cell objects
-const initialize = () => {
-  let res: CellGrid = [];
+const graph: GraphType = [];
+graph.push(...GraphHelper.generateGraph(ROWS, COLS));
+let start = GraphHelper.getCell(graph, 0, 0);
+let end = GraphHelper.getCell(graph, 4, 0);
 
-  for (let i = 0; i < ROWS; i++) {
-    let row: Cell[] = [];
-    for (let j = 0; j < COLS; j++) {
-      row.push({
-        posRow: i,
-        posCol: j,
-        cellType: CellType.Normal,
-        cellStyle: CellStyles.Normal,
-      });
-    }
-    res.push(row);
-  }
-  _grid.push(...res);
-};
-
-initialize();
+if (start && end) {
+  let distances = GraphHelper.dijkstra(graph, start);
+  let distance = GraphHelper.getDistanceBetweenTwoCells(distances, start, end);
+  console.log(distance);
+}
 
 // Defines the action used on the reducer for updating the state of a cell in the grid
 interface UpdateCellAction {
@@ -44,10 +39,10 @@ interface UpdateCellAction {
 // - action: The action object containing information about the update.
 // Return Value:
 // - A new state representing the updated grid after applying the action.
-const cellReducer = (state: CellGrid, action: UpdateCellAction): CellGrid => {
+const cellReducer = (state: GraphType, action: UpdateCellAction): GraphType => {
   switch (action.type) {
     case CellActions.UpdateCell:
-      const newState: CellGrid = [...state];
+      const newState: GraphType = [...state];
       newState[action.payload.row] = [...state[action.payload.row]];
       newState[action.payload.row][action.payload.col].cellStyle =
         action.payload.style;
@@ -55,7 +50,7 @@ const cellReducer = (state: CellGrid, action: UpdateCellAction): CellGrid => {
   }
 };
 function App() {
-  const [grid, dispatch] = useReducer(cellReducer, _grid);
+  const [grid, dispatch] = useReducer(cellReducer, graph);
 
   // Function to update a cell in the grid
   // Parameters:
@@ -72,7 +67,7 @@ function App() {
 
   useEffect(() => {
     // set start cell to 0, 0 and some arbitrary cell to finish
-    updateCell(0, 0, CellStyles.Start);
+    updateCell(1, 0, CellStyles.Start);
     updateCell(Math.floor(ROWS / 2), Math.floor(COLS / 2), CellStyles.Finish);
   }, []);
 
