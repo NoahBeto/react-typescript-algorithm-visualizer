@@ -1,5 +1,11 @@
-import { useEffect, useReducer } from "react";
-import { GraphHelper, GraphType, CellStyles, CellActions } from "./ts/cell";
+import { useReducer } from "react";
+import {
+  GraphHelper,
+  GraphType,
+  CellStyles,
+  CellActions,
+  Cell,
+} from "./ts/cell";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
 
@@ -16,12 +22,8 @@ const graph: GraphType = [];
 graph.push(...GraphHelper.generateGraph(ROWS, COLS));
 let start = GraphHelper.getCell(graph, 0, 0);
 let end = GraphHelper.getCell(graph, 4, 0);
-
-if (start && end) {
-  let distances = GraphHelper.dijkstra(graph, start);
-  let distance = GraphHelper.getDistanceBetweenTwoCells(distances, start, end);
-  console.log(distance);
-}
+let distances: { [key: string]: number } = GraphHelper.dijkstra(graph, start);
+let path: Cell[] = GraphHelper.getPath(graph, distances, start, end);
 
 // Defines the action used on the reducer for updating the state of a cell in the grid
 interface UpdateCellAction {
