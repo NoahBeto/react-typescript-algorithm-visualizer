@@ -6,9 +6,11 @@ export class PriorityQueue<T> {
     this.sort();
   }
 
-  dequeue(): T | undefined {
+  dequeue(): T {
     const removedItem = this.queue.shift();
-    return removedItem ? removedItem.element : undefined;
+    if (removedItem === undefined)
+      throw new Error("Priority queue dequeued undefined");
+    return removedItem.element;
   }
 
   isEmpty(): boolean {
