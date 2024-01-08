@@ -2,6 +2,9 @@ import { PriorityQueue } from "./helper";
 
 export class GraphHelper {
   static generateGraph(rows: number, cols: number): Cell[][] {
+    if (rows <= 0 || cols <= 0) {
+      throw new Error("Rows and cols must be positive integers");
+    }
     let res: Cell[][] = [];
 
     for (let i = 0; i < rows; i++) {
@@ -19,7 +22,7 @@ export class GraphHelper {
     return res;
   }
 
-  static getCell(graph: GraphType, row: number, col: number): Cell | undefined {
+  static getCell(graph: GraphType, row: number, col: number): Cell {
     if (
       !(
         graph &&
@@ -30,8 +33,7 @@ export class GraphHelper {
         col < graph[0].length
       )
     ) {
-      console.error("Invalid row or column index");
-      return undefined;
+      throw new Error("Invalid row or column index");
     }
     return graph[row][col];
   }
@@ -45,7 +47,6 @@ export class GraphHelper {
     for (let row = 0; row < graph.length; row++) {
       for (let col = 0; col < graph[row].length; col++) {
         const cell = GraphHelper.getCell(graph, row, col);
-        if (!cell) continue;
 
         distances[`${cell.posRow}-${cell.posCol}`] = Infinity;
         visited[`${cell.posRow}-${cell.posCol}`] = false;
@@ -57,8 +58,7 @@ export class GraphHelper {
     priorityQueue.enqueue(start, 0);
 
     while (!priorityQueue.isEmpty()) {
-      const currentCell: Cell | undefined = priorityQueue.dequeue();
-      if (!currentCell) continue;
+      const currentCell: Cell = priorityQueue.dequeue();
 
       if (visited[`${currentCell.posRow}-${currentCell.posCol}`]) continue;
       visited[`${currentCell.posRow}-${currentCell.posCol}`] = true;
@@ -76,7 +76,7 @@ export class GraphHelper {
     return distances;
   }
 
-  static getNeighbors(graph: GraphType, cell: Cell): Cell[] {
+  private static getNeighbors(graph: GraphType, cell: Cell): Cell[] {
     const neighbors: Cell[] = [];
 
     // Example: Check top, bottom, left, and right neighbors
