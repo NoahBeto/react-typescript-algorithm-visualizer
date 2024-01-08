@@ -1,12 +1,11 @@
-import { useReducer, useEffect, useState } from "react";
+import { useReducer, useEffect, useState, useRef } from "react";
+import { CellStyles, Cell } from "./ts/cell";
 import {
+  GraphAction,
+  GraphActions,
   GraphHelper,
   GraphType,
-  CellStyles,
-  CellActions,
-  Cell,
-  CellAction,
-} from "./ts/cell";
+} from "./ts/GraphHelper";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
 
@@ -25,15 +24,15 @@ const COLS = 40;
 // - action: The action object containing information about the update.
 // Return Value:
 // - A new state representing the updated grid after applying the action.
-const cellReducer = (state: GraphType, action: CellAction): GraphType => {
+const cellReducer = (state: GraphType, action: GraphAction): GraphType => {
   switch (action.type) {
-    case CellActions.UpdateCell:
+    case GraphActions.UpdateCell:
       const newState: GraphType = [...state];
       newState[action.payload.row] = [...state[action.payload.row]];
       newState[action.payload.row][action.payload.col].cellStyle =
         action.payload.style;
       return newState;
-    case CellActions.InitializeGraph:
+    case GraphActions.InitializeGraph:
       return GraphHelper.generateGraph(
         action.payload.rows,
         action.payload.columns
@@ -54,7 +53,6 @@ function App() {
     initializeGraph(ROWS, COLS);
   }, []);
 
-  //
   useEffect(() => {
     if (graph.length === 0) return;
 
@@ -74,7 +72,7 @@ function App() {
   // Return Value: None (dispatches an action to update the grid state)
   const updateCell = (row: number, col: number, style: CellStyles): void => {
     dispatch({
-      type: CellActions.UpdateCell,
+      type: GraphActions.UpdateCell,
       payload: { row, col, style },
     });
   };
@@ -87,7 +85,7 @@ function App() {
   // Return Value: None (dispatches an action to update the grid state)
   const initializeGraph = (rows: number, columns: number): void => {
     dispatch({
-      type: CellActions.InitializeGraph,
+      type: GraphActions.InitializeGraph,
       payload: { rows, columns },
     });
   };
@@ -97,7 +95,7 @@ function App() {
   const startAnimation = async () => {
     for (const cell of path) {
       updateCell(cell.posRow, cell.posCol, CellStyles.Highlight);
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 25));
     }
   };
 
@@ -116,7 +114,7 @@ function App() {
             </div>
           </div>
           <button className="visualize-btn" onClick={() => startAnimation()}>
-            Button
+            Go
           </button>
         </div>
         <div className="graphWrapper">
