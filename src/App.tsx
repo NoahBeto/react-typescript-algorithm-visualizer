@@ -83,8 +83,8 @@ function App() {
           </div>
           <button className="visualize-btn">Button</button>
         </div>
-        <div className="gridWrapper">
-          {grid.map((row, index) =>
+        <div className="graphWrapper">
+          {graph.map((row, index) =>
             row.map((item, _index) => (
               <CellNode
                 key={`${item.posRow}-${item.posCol}`}
