@@ -81,36 +81,16 @@ export class GraphHelper {
 
     // Example: Check top, bottom, left, and right neighbors
     if (cell.posRow > 0) {
-      const topNeighbor = GraphHelper.getCell(
-        graph,
-        cell.posRow - 1,
-        cell.posCol
-      );
-      if (topNeighbor) neighbors.push(topNeighbor);
+      neighbors.push(GraphHelper.getCell(graph, cell.posRow - 1, cell.posCol));
     }
     if (cell.posRow < graph.length - 1) {
-      const bottomNeighbor = GraphHelper.getCell(
-        graph,
-        cell.posRow + 1,
-        cell.posCol
-      );
-      if (bottomNeighbor) neighbors.push(bottomNeighbor);
+      neighbors.push(GraphHelper.getCell(graph, cell.posRow + 1, cell.posCol));
     }
     if (cell.posCol > 0) {
-      const leftNeighbor = GraphHelper.getCell(
-        graph,
-        cell.posRow,
-        cell.posCol - 1
-      );
-      if (leftNeighbor) neighbors.push(leftNeighbor);
+      neighbors.push(GraphHelper.getCell(graph, cell.posRow, cell.posCol - 1));
     }
     if (cell.posCol < graph[cell.posRow].length - 1) {
-      const rightNeighbor = GraphHelper.getCell(
-        graph,
-        cell.posRow,
-        cell.posCol + 1
-      );
-      if (rightNeighbor) neighbors.push(rightNeighbor);
+      neighbors.push(GraphHelper.getCell(graph, cell.posRow, cell.posCol + 1));
     }
 
     return neighbors;
