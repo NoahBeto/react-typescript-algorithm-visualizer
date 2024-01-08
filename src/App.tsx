@@ -65,12 +65,6 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    // set start cell to 0, 0 and some arbitrary cell to finish
-    updateCell(1, 0, CellStyles.Start);
-    updateCell(Math.floor(ROWS / 2), Math.floor(COLS / 2), CellStyles.Finish);
-  }, []);
-
   return (
     <>
       <div className="wrapper">
