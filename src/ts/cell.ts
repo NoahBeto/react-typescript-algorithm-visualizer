@@ -200,6 +200,7 @@ export enum CellStyles {
   Normal = "cell-normal",
   Start = "cell-start",
   Finish = "cell-finish",
+  Highlight = "cell-highlight",
 }
 
 // Actions that can be used on the reducer

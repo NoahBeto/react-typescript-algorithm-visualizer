@@ -20,3 +20,7 @@
 .cell-finish {
   background: rgba(255, 0, 0, 0.7);
 }
+
+.cell-highlight {
+  background: var(--accent);
+}
