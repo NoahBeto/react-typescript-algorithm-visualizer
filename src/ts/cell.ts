@@ -116,6 +116,39 @@ export class GraphHelper {
     return neighbors;
   }
 
+  static getPath(
+    graph: GraphType,
+    distances: { [key: string]: number },
+    startCell: Cell,
+    endCell: Cell
+  ): Cell[] {
+    const path: Cell[] = [];
+    let currentCell = endCell;
+
+    while (currentCell !== startCell) {
+      path.unshift(currentCell);
+      const neighbors = this.getNeighbors(graph, currentCell);
+
+      const nextCell = neighbors.reduce((minDistanceCell, neighbor) => {
+        const key = `${neighbor.posRow}-${neighbor.posCol}`;
+        const neighborDistance = distances[key];
+
+        if (
+          neighborDistance <
+          distances[`${minDistanceCell.posRow}-${minDistanceCell.posCol}`]
+        ) {
+          return neighbor;
+        } else {
+          return minDistanceCell;
+        }
+      }, neighbors[0]);
+      currentCell = nextCell;
+    }
+    path.unshift(startCell);
+
+    return path;
+  }
+
   static getDistanceBetweenTwoCells(
     distances: { [key: string]: number },
     start: Cell,
