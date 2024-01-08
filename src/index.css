@@ -10,6 +10,7 @@
   --text: #cee4fd;
   --static3: rgba(255, 255, 255, 0.03);
   --static5: rgba(255, 255, 255, 0.05);
+  --static25: rgba(255, 255, 255, 0.25);
 }
 
 body {
