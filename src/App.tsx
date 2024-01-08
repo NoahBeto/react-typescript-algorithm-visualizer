@@ -1,10 +1,11 @@
-import { useReducer } from "react";
+import { useReducer, useEffect, useState } from "react";
 import {
   GraphHelper,
   GraphType,
   CellStyles,
   CellActions,
   Cell,
+  CellAction,
 } from "./ts/cell";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
@@ -18,30 +19,13 @@ const ROWS = 5;
 const COLS = 40;
 // ---------------------------------------------------------
 
-const graph: GraphType = [];
-graph.push(...GraphHelper.generateGraph(ROWS, COLS));
-let start = GraphHelper.getCell(graph, 0, 0);
-let end = GraphHelper.getCell(graph, 4, 0);
-let distances: { [key: string]: number } = GraphHelper.dijkstra(graph, start);
-let path: Cell[] = GraphHelper.getPath(graph, distances, start, end);
-
-// Defines the action used on the reducer for updating the state of a cell in the grid
-interface UpdateCellAction {
-  type: CellActions.UpdateCell;
-  payload: {
-    row: number;
-    col: number;
-    style: CellStyles;
-  };
-}
-
 // Reducer function to update a cell's style in the grid
 // Parameters:
 // - state: The current state of the grid (2D array of cells).
 // - action: The action object containing information about the update.
 // Return Value:
 // - A new state representing the updated grid after applying the action.
-const cellReducer = (state: GraphType, action: UpdateCellAction): GraphType => {
+const cellReducer = (state: GraphType, action: CellAction): GraphType => {
   switch (action.type) {
     case CellActions.UpdateCell:
       const newState: GraphType = [...state];
@@ -49,10 +33,38 @@ const cellReducer = (state: GraphType, action: UpdateCellAction): GraphType => {
       newState[action.payload.row][action.payload.col].cellStyle =
         action.payload.style;
       return newState;
+    case CellActions.InitializeGraph:
+      return GraphHelper.generateGraph(
+        action.payload.rows,
+        action.payload.columns
+      );
   }
 };
+
 function App() {
-  const [grid, dispatch] = useReducer(cellReducer, graph);
+  const [graph, dispatch] = useReducer(cellReducer, []);
+  const [hasGraphUpdated, setHasGraphUpdated] = useState<Boolean>(false);
+  let start: Cell;
+  let end: Cell;
+  let distances: { [key: string]: number };
+  let path: Cell[];
+
+  // initialize graph on initial load
+  useEffect(() => {
+    initializeGraph(ROWS, COLS);
+  }, []);
+
+  //
+  useEffect(() => {
+    if (graph.length === 0) return;
+
+    start = GraphHelper.getCell(graph, 0, 0);
+    end = GraphHelper.getCell(graph, 3, 29);
+    distances = GraphHelper.dijkstra(graph, start);
+    path = GraphHelper.getPath(graph, distances, start, end);
+
+    setHasGraphUpdated(true);
+  }, [graph, hasGraphUpdated]);
 
   // Function to update a cell in the grid
   // Parameters:
@@ -65,6 +77,28 @@ function App() {
       type: CellActions.UpdateCell,
       payload: { row, col, style },
     });
+  };
+
+  // Function to initialize the graph
+  // Parameters:
+  // - row: The row index of the cell to be updated.
+  // - col: The column index of the cell to be updated.
+  // - style: The new style to be assigned to the cell.
+  // Return Value: None (dispatches an action to update the grid state)
+  const initializeGraph = (rows: number, columns: number): void => {
+    dispatch({
+      type: CellActions.InitializeGraph,
+      payload: { rows, columns },
+    });
+  };
+
+  // Iterates through the path from the start cell to the end cell
+  // and animates the path along the way
+  const startAnimation = async () => {
+    for (const cell of path) {
+      updateCell(cell.posRow, cell.posCol, CellStyles.Highlight);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
   };
 
   return (
@@ -81,7 +115,9 @@ function App() {
               <div className="dropdown-item">Algorithm 5</div>
             </div>
           </div>
-          <button className="visualize-btn">Button</button>
+          <button className="visualize-btn" onClick={() => startAnimation()}>
+            Button
+          </button>
         </div>
         <div className="graphWrapper">
           {graph.map((row, index) =>

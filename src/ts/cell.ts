@@ -206,5 +206,26 @@ export enum CellStyles {
 // Actions that can be used on the reducer
 export enum CellActions {
   UpdateCell,
-  InitializeGrid,
+  InitializeGraph,
+}
+
+export type CellAction =
+  | {
+      type: CellActions.UpdateCell;
+      payload: UpdateCellPayload;
+    }
+  | {
+      type: CellActions.InitializeGraph;
+      payload: InitializeGraphPayload;
+    };
+
+interface UpdateCellPayload {
+  row: number;
+  col: number;
+  style: CellStyles;
+}
+
+interface InitializeGraphPayload {
+  rows: number;
+  columns: number;
 }
