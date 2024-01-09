@@ -72,7 +72,9 @@ function App() {
   // - col: The column index of the cell to be updated.
   // - style: The new style to be assigned to the cell.
   // Return Value: None (dispatches an action to update the grid state)
-  const initializeGraph = (rows: number, columns: number): void => {
+  const initializeGraph = (): void => {
+    let rows = ROWS;
+    let columns = COLS;
     dispatch({
       type: GraphActions.InitializeGraph,
       payload: { rows, columns },
@@ -81,19 +83,30 @@ function App() {
 
   // initialize graph on initial load
   useEffect(() => {
-    initializeGraph(ROWS, COLS);
+    initializeGraph();
   }, []);
+
+  // Handles resetting the graph to initial state
+  const handleResetGraphButton = (): void => {
+    initializeGraph();
+    dijkstraState = {
+      selectedCellStyleToPlace: CellStyles.Start,
+      startCell: undefined,
+      finishCell: undefined,
+      distances: undefined,
+      path: undefined,
+    };
+  };
 
   // Handle clicking the desired path finding algorithm
   const handleChooseAlgorithm = (clicked: GraphAlgorithms): void => {
-    console.log(clicked);
     setCurrentAlgorithm(clicked);
   };
 
   // Handle clicking on the desired cell to place in the graph
   // Parameters:
   // - cellClicked: The CellStyle to be set to the current cell being placed
-  //                e.g. CellStyles.Start, CellStyles.Finish.
+  // e.g. CellStyles.Start, CellStyles.Finish.
   const handleSetCellToPlace = (cellClicked: CellStyles): void => {
     setSelectedCellToPlace(cellClicked);
   };
@@ -195,6 +208,12 @@ function App() {
     <>
       <div className="wrapper">
         <div className="navbar">
+          <button
+            className="reset-graph"
+            onClick={() => handleResetGraphButton()}
+          >
+            Reset Graph
+          </button>
           <div className="dropdown">
             <button className="dropbtn">
               {currentAlgorithm ? currentAlgorithm : "(Select Algorithm)"}
@@ -212,9 +231,6 @@ function App() {
               >
                 A*
               </div>
-              <div className="dropdown-item">Algorithm 3</div>
-              <div className="dropdown-item">Algorithm 4</div>
-              <div className="dropdown-item">Algorithm 5</div>
             </div>
           </div>
           <button className="visualize-btn" onClick={() => calculate()}>
