@@ -1,5 +1,5 @@
 import { Cell, CellStyles, CellType } from "./cell";
-import { PriorityQueue } from "./helper";
+import { PriorityQueue } from "./PriorityQueue";
 
 export class GraphHelper {
   static generateGraph(rows: number, cols: number): Cell[][] {
@@ -97,7 +97,7 @@ export class GraphHelper {
     return neighbors;
   }
 
-  static getPath(
+  static dijkstraBackTrack(
     graph: GraphType,
     distances: { [key: string]: number },
     startCell: Cell,
@@ -148,6 +148,11 @@ export class GraphHelper {
 }
 
 export type GraphType = Cell[][];
+
+export enum GraphAlgorithms {
+  Dijkstra = "Dijkstra",
+  Astar = "A*",
+}
 
 export enum GraphActions {
   UpdateCell,

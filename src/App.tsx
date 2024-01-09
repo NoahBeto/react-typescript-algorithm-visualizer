@@ -3,8 +3,10 @@ import { CellStyles, Cell } from "./ts/cell";
 import {
   GraphAction,
   GraphActions,
+  GraphAlgorithms,
   GraphHelper,
   GraphType,
+  UpdateGraphPayload,
 } from "./ts/GraphHelper";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
@@ -24,14 +26,14 @@ const COLS = 40;
 // - action: The action object containing information about the update.
 // Return Value:
 // - A new state representing the updated grid after applying the action.
-const cellReducer = (state: GraphType, action: GraphAction): GraphType => {
+const graphReducer = (state: GraphType, action: GraphAction): GraphType => {
   switch (action.type) {
     case GraphActions.UpdateCell:
-      const newState: GraphType = [...state];
-      newState[action.payload.row] = [...state[action.payload.row]];
-      newState[action.payload.row][action.payload.col].cellStyle =
+      const newGraph: GraphType = [...state];
+      newGraph[action.payload.row] = [...state[action.payload.row]];
+      newGraph[action.payload.row][action.payload.col].cellStyle =
         action.payload.style;
-      return newState;
+      return newGraph;
     case GraphActions.InitializeGraph:
       return GraphHelper.generateGraph(
         action.payload.rows,
@@ -40,42 +42,29 @@ const cellReducer = (state: GraphType, action: GraphAction): GraphType => {
   }
 };
 
+interface DijkstraState {
+  selectedCellStyleToPlace: CellStyles;
+  startCell: Cell | undefined;
+  finishCell: Cell | undefined;
+  distances: { [key: string]: number } | undefined;
+  path: Cell[] | undefined;
+}
+
+let dijkstraState: DijkstraState = {
+  selectedCellStyleToPlace: CellStyles.Start,
+  startCell: undefined,
+  finishCell: undefined,
+  distances: undefined,
+  path: undefined,
+};
+
 function App() {
-  const [graph, dispatch] = useReducer(cellReducer, []);
-  const [hasGraphUpdated, setHasGraphUpdated] = useState<Boolean>(false);
-  let start: Cell;
-  let end: Cell;
-  let distances: { [key: string]: number };
-  let path: Cell[];
+  const [graph, dispatch] = useReducer(graphReducer, []);
+  const [selectedCellStyleToPlace, setSelectedCellToPlace] =
+    useState<CellStyles>(CellStyles.Normal);
 
-  // initialize graph on initial load
-  useEffect(() => {
-    initializeGraph(ROWS, COLS);
-  }, []);
-
-  useEffect(() => {
-    if (graph.length === 0) return;
-
-    start = GraphHelper.getCell(graph, 0, 0);
-    end = GraphHelper.getCell(graph, 3, 29);
-    distances = GraphHelper.dijkstra(graph, start);
-    path = GraphHelper.getPath(graph, distances, start, end);
-
-    setHasGraphUpdated(true);
-  }, [graph, hasGraphUpdated]);
-
-  // Function to update a cell in the grid
-  // Parameters:
-  // - row: The row index of the cell to be updated.
-  // - col: The column index of the cell to be updated.
-  // - style: The new style to be assigned to the cell.
-  // Return Value: None (dispatches an action to update the grid state)
-  const updateCell = (row: number, col: number, style: CellStyles): void => {
-    dispatch({
-      type: GraphActions.UpdateCell,
-      payload: { row, col, style },
-    });
-  };
+  const [currentAlgorithm, setCurrentAlgorithm] =
+    useState<GraphAlgorithms | null>(null);
 
   // Function to initialize the graph
   // Parameters:
@@ -90,10 +79,113 @@ function App() {
     });
   };
 
-  // Iterates through the path from the start cell to the end cell
-  // and animates the path along the way
-  const startAnimation = async () => {
-    for (const cell of path) {
+  // initialize graph on initial load
+  useEffect(() => {
+    initializeGraph(ROWS, COLS);
+  }, []);
+
+  // Handle clicking the desired path finding algorithm
+  const handleChooseAlgorithm = (clicked: GraphAlgorithms): void => {
+    console.log(clicked);
+    setCurrentAlgorithm(clicked);
+  };
+
+  // Handle clicking on the desired cell to place in the graph
+  // Parameters:
+  // - cellClicked: The CellStyle to be set to the current cell being placed
+  //                e.g. CellStyles.Start, CellStyles.Finish.
+  const handleSetCellToPlace = (cellClicked: CellStyles): void => {
+    setSelectedCellToPlace(cellClicked);
+  };
+
+  // Handles updating the clicked cell based on the current desired
+  // cell to place e.g. Start, Finish, etc.
+  const handleCellClick = (
+    row: number,
+    col: number,
+    style?: CellStyles
+  ): void => {
+    // set the clicked cell to the desired type (start or finish)
+    style = selectedCellStyleToPlace;
+    dispatch({
+      type: GraphActions.UpdateCell,
+      payload: { row, col, style },
+    });
+
+    // if the user is currently placing a start cell, then set the
+    // previous start cell to normal, and update the clicked cell
+    // to a start cell
+    if (style === CellStyles.Start) {
+      // update previous start cell
+      if (dijkstraState.startCell !== undefined) {
+        console.log(`current: ${dijkstraState.startCell}`);
+        let data: UpdateGraphPayload = {
+          row: dijkstraState.startCell.posRow,
+          col: dijkstraState.startCell.posCol,
+          style: CellStyles.Normal,
+        };
+        dispatch({
+          type: GraphActions.UpdateCell,
+          payload: data,
+        });
+      }
+      // set new start cell
+      dijkstraState.startCell = GraphHelper.getCell(graph, row, col);
+    }
+    // if the user is currently placing a finsh cell, then set the
+    // previous finish cell to normal, and update the clicked cell
+    // to a finish cell
+    else if (style === CellStyles.Finish) {
+      // update previous finish cell
+      if (dijkstraState.finishCell !== undefined) {
+        let data: UpdateGraphPayload = {
+          row: dijkstraState.finishCell.posRow,
+          col: dijkstraState.finishCell.posCol,
+          style: CellStyles.Normal,
+        };
+        dispatch({
+          type: GraphActions.UpdateCell,
+          payload: data,
+        });
+      }
+      // set finish start cell
+      dijkstraState.finishCell = GraphHelper.getCell(graph, row, col);
+    }
+  };
+
+  // Function to update a cell in the grid
+  // Parameters:
+  // - row: The row index of the cell to be updated.
+  // - col: The column index of the cell to be updated.
+  // - style: The new style to be assigned to the cell.
+  // Return Value: None (dispatches an action to update the grid state)
+  const updateCell = (row: number, col: number, style: CellStyles): void => {
+    dispatch({
+      type: GraphActions.UpdateCell,
+      payload: { row, col, style },
+    });
+  };
+
+  const calculate = (): void => {
+    if (!dijkstraState.startCell || !dijkstraState.finishCell) return;
+
+    dijkstraState.distances = GraphHelper.dijkstra(
+      graph,
+      dijkstraState.startCell
+    );
+    dijkstraState.path = GraphHelper.dijkstraBackTrack(
+      graph,
+      dijkstraState.distances,
+      dijkstraState.startCell,
+      dijkstraState.finishCell
+    );
+    animate();
+  };
+
+  const animate = async () => {
+    if (!dijkstraState.path) return;
+
+    for (const cell of dijkstraState.path) {
       updateCell(cell.posRow, cell.posCol, CellStyles.Highlight);
       await new Promise((resolve) => setTimeout(resolve, 25));
     }
@@ -104,18 +196,46 @@ function App() {
       <div className="wrapper">
         <div className="navbar">
           <div className="dropdown">
-            <button className="dropbtn">(Select Algorithm)</button>
+            <button className="dropbtn">
+              {currentAlgorithm ? currentAlgorithm : "(Select Algorithm)"}
+            </button>
             <div className="dropdown-content">
-              <div className="dropdown-item">Dijkstra</div>
-              <div className="dropdown-item">A*</div>
+              <div
+                className="dropdown-item"
+                onClick={() => handleChooseAlgorithm(GraphAlgorithms.Dijkstra)}
+              >
+                Dijkstra
+              </div>
+              <div
+                className="dropdown-item"
+                onClick={() => handleChooseAlgorithm(GraphAlgorithms.Astar)}
+              >
+                A*
+              </div>
               <div className="dropdown-item">Algorithm 3</div>
               <div className="dropdown-item">Algorithm 4</div>
               <div className="dropdown-item">Algorithm 5</div>
             </div>
           </div>
-          <button className="visualize-btn" onClick={() => startAnimation()}>
+          <button className="visualize-btn" onClick={() => calculate()}>
             Go
           </button>
+          <div className="start-end-selector-container">
+            <div
+              className="selector selector-normal"
+              onClick={() => handleSetCellToPlace(CellStyles.Start)}
+            >
+              <div className="cell cell-start"></div>
+              <div>Set Start Cell</div>
+            </div>
+            <div
+              className="selector selector-normal"
+              onClick={() => handleSetCellToPlace(CellStyles.Finish)}
+            >
+              <div className="cell cell-finish"></div>
+              <div>Set Finish Cell</div>
+            </div>
+          </div>
         </div>
         <div className="graphWrapper">
           {graph.map((row, index) =>
@@ -123,6 +243,9 @@ function App() {
               <CellNode
                 key={`${item.posRow}-${item.posCol}`}
                 cellStyles={item.cellStyle}
+                row={item.posRow}
+                col={item.posCol}
+                onClick={handleCellClick}
               ></CellNode>
             ))
           )}
