@@ -17,11 +17,16 @@ export const AlertMessage = ({
     <>
       <div className="modal-overlay">
         <div className="modal">
-          <div className="modal-content">
-            <p className="modal-message">{message}</p>
+          <div className="modal-content-upper">
+            <span>&times;</span>
             <span className="close" onClick={onClose}>
               &times;
             </span>
+          </div>
+          <div className="modal-content-lower">
+            <span>Error...</span>
+            <span className="modal-message">{message}</span>
+            <button onClick={onClose}>Try Again</button>
           </div>
         </div>
       </div>
