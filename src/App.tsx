@@ -10,6 +10,7 @@ import {
 } from "./ts/GraphHelper";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
+import { AlertMessage } from "./components/AlertMessage";
 
 const ROWS = 5;
 
@@ -65,6 +66,11 @@ function App() {
 
   const [currentAlgorithm, setCurrentAlgorithm] =
     useState<GraphAlgorithms | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>(
+    "Error, invalid input"
+  );
 
   // Function to initialize the graph
   // Parameters:
@@ -179,20 +185,31 @@ function App() {
     });
   };
 
-  const calculate = (): void => {
-    if (!dijkstraState.startCell || !dijkstraState.finishCell) return;
+  const handleGoButton = (): void => {
+    switch (currentAlgorithm) {
+      case GraphAlgorithms.Dijkstra:
+        if (!dijkstraState.startCell || !dijkstraState.finishCell) {
+          setModalMessage("Please place a start and finish cell");
+          setIsModalOpen(true);
+          return;
+        }
 
-    dijkstraState.distances = GraphHelper.dijkstra(
-      graph,
-      dijkstraState.startCell
-    );
-    dijkstraState.path = GraphHelper.dijkstraBackTrack(
-      graph,
-      dijkstraState.distances,
-      dijkstraState.startCell,
-      dijkstraState.finishCell
-    );
-    animate();
+        dijkstraState.distances = GraphHelper.dijkstra(
+          graph,
+          dijkstraState.startCell
+        );
+        dijkstraState.path = GraphHelper.dijkstraBackTrack(
+          graph,
+          dijkstraState.distances,
+          dijkstraState.startCell,
+          dijkstraState.finishCell
+        );
+        animate();
+        break;
+      default:
+        setModalMessage("Please select an algorithm");
+        setIsModalOpen(true);
+    }
   };
 
   const animate = async () => {
@@ -204,9 +221,18 @@ function App() {
     }
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
       <div className="wrapper">
+        <AlertMessage
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          message={modalMessage}
+        ></AlertMessage>
         <div className="navbar">
           <button
             className="reset-graph"
@@ -233,7 +259,7 @@ function App() {
               </div>
             </div>
           </div>
-          <button className="visualize-btn" onClick={() => calculate()}>
+          <button className="visualize-btn" onClick={() => handleGoButton()}>
             Go
           </button>
           <div className="start-end-selector-container">
