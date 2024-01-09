@@ -73,10 +73,6 @@ function App() {
   );
 
   // Function to initialize the graph
-  // Parameters:
-  // - row: The row index of the cell to be updated.
-  // - col: The column index of the cell to be updated.
-  // - style: The new style to be assigned to the cell.
   // Return Value: None (dispatches an action to update the grid state)
   const initializeGraph = (): void => {
     let rows = ROWS;
