@@ -31,7 +31,6 @@ const graphReducer = (state: GraphType, action: GraphAction): GraphType => {
   switch (action.type) {
     case GraphActions.UpdateCell:
       const newGraph: GraphType = [...state];
-      newGraph[action.payload.row] = [...state[action.payload.row]];
       newGraph[action.payload.row][action.payload.col].cellStyle =
         action.payload.style;
       return newGraph;
@@ -193,7 +192,10 @@ function App() {
           return;
         }
 
-        const res = GraphHelper.dijkstra(graph, dijkstraState.startCell);
+        const res: [{ [key: string]: number }, Cell[]] = GraphHelper.dijkstra(
+          graph,
+          dijkstraState.startCell
+        );
         dijkstraState.distances = res[0];
         dijkstraState.visited = res[1];
         dijkstraState.path = GraphHelper.dijkstraBackTrack(
