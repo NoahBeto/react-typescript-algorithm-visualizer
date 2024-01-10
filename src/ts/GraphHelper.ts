@@ -39,9 +39,13 @@ export class GraphHelper {
     return graph[row][col];
   }
 
-  static dijkstra(graph: GraphType, start: Cell): { [key: string]: number } {
+  static dijkstra(
+    graph: GraphType,
+    start: Cell
+  ): [{ [key: string]: number }, Cell[]] {
     const distances: { [key: string]: number } = {};
     const visited: { [key: string]: boolean } = {};
+    const visitedCells: Cell[] = [];
     const priorityQueue = new PriorityQueue<Cell>();
 
     // initialize all cells with distance infinity and visited false
@@ -64,6 +68,8 @@ export class GraphHelper {
       if (visited[`${currentCell.posRow}-${currentCell.posCol}`]) continue;
       visited[`${currentCell.posRow}-${currentCell.posCol}`] = true;
 
+      visitedCells.push(currentCell);
+
       for (const neighbor of this.getNeighbors(graph, currentCell)) {
         const newDistance =
           distances[`${currentCell.posRow}-${currentCell.posCol}`] + 1;
@@ -74,7 +80,7 @@ export class GraphHelper {
       }
     }
 
-    return distances;
+    return [distances, visitedCells];
   }
 
   private static getNeighbors(graph: GraphType, cell: Cell): Cell[] {

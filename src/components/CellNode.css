@@ -24,3 +24,7 @@
 .cell-highlight {
   background: var(--accent);
 }
+
+.cell-subtle-highlight {
+  background: var(--secondary);
+}

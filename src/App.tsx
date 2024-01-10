@@ -12,7 +12,7 @@ import "./App.css";
 import { CellNode } from "./components/CellNode";
 import { AlertMessage } from "./components/AlertMessage";
 
-const ROWS = 5;
+const ROWS = 20;
 
 // ---------------------------------------------------------
 // DO NOT CHANGE!!!
@@ -49,6 +49,7 @@ interface DijkstraState {
   finishCell: Cell | undefined;
   distances: { [key: string]: number } | undefined;
   path: Cell[] | undefined;
+  visited: Cell[] | undefined;
 }
 
 let dijkstraState: DijkstraState = {
@@ -57,6 +58,7 @@ let dijkstraState: DijkstraState = {
   finishCell: undefined,
   distances: undefined,
   path: undefined,
+  visited: undefined,
 };
 
 function App() {
@@ -97,6 +99,7 @@ function App() {
       finishCell: undefined,
       distances: undefined,
       path: undefined,
+      visited: undefined,
     };
   };
 
@@ -190,10 +193,9 @@ function App() {
           return;
         }
 
-        dijkstraState.distances = GraphHelper.dijkstra(
-          graph,
-          dijkstraState.startCell
-        );
+        const res = GraphHelper.dijkstra(graph, dijkstraState.startCell);
+        dijkstraState.distances = res[0];
+        dijkstraState.visited = res[1];
         dijkstraState.path = GraphHelper.dijkstraBackTrack(
           graph,
           dijkstraState.distances,
@@ -209,11 +211,20 @@ function App() {
   };
 
   const animate = async () => {
-    if (!dijkstraState.path) return;
+    if (!dijkstraState.visited || !dijkstraState.path) return;
 
+    // animate dijkstra searching for finish cell
+    for (const cell of dijkstraState.visited) {
+      updateCell(cell.posRow, cell.posCol, CellStyles.SubtleHighlight);
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      if (cell === dijkstraState.finishCell) break;
+    }
+
+    // animate shortest path from start to finish cell
     for (const cell of dijkstraState.path) {
       updateCell(cell.posRow, cell.posCol, CellStyles.Highlight);
-      await new Promise((resolve) => setTimeout(resolve, 25));
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      if (cell === dijkstraState.finishCell) break;
     }
   };
 

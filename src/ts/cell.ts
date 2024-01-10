@@ -25,10 +25,11 @@ export enum CellType {
   Finish,
 }
 
-// These styles are defined in App.css
+// These styles are defined in CellNode.css
 export enum CellStyles {
   Normal = "cell-normal",
   Start = "cell-start",
   Finish = "cell-finish",
   Highlight = "cell-highlight",
+  SubtleHighlight = "cell-subtle-highlight",
 }
