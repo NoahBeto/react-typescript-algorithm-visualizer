@@ -260,12 +260,12 @@ function App() {
               >
                 Dijkstra
               </div>
-              <div
+              {/* <div
                 className="dropdown-item"
                 onClick={() => handleChooseAlgorithm(GraphAlgorithms.Astar)}
               >
                 A*
-              </div>
+              </div> */}
             </div>
           </div>
           <button className="visualize-btn" onClick={() => handleGoButton()}>
