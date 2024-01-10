@@ -21,15 +21,3 @@ export class PriorityQueue<T> {
     this.queue.sort((a, b) => a.priority - b.priority);
   }
 }
-
-// Example usage:
-// const priorityQueue = new PriorityQueue<number>();
-
-// priorityQueue.enqueue(5, 2);
-// priorityQueue.enqueue(8, 1);
-// priorityQueue.enqueue(3, 4);
-
-// while (!priorityQueue.isEmpty()) {
-//   const element = priorityQueue.dequeue();
-//   console.log(element);
-// }
