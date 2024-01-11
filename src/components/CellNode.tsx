@@ -1,4 +1,3 @@
-import React from "react";
 import { CellStyles } from "../ts/cell";
 import "./CellNode.css";
 
