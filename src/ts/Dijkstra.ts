@@ -1,4 +1,4 @@
-import { GraphHelper, GraphType } from "./GraphHelper";
+import { GraphHelper, Graph } from "./GraphHelper";
 import { PriorityQueue } from "./PriorityQueue";
 import { Cell, CellStyles } from "./cell";
 
@@ -10,7 +10,7 @@ export interface DijkstraState {
 }
 
 export const dijkstra = (
-  graph: GraphType
+  graph: Graph
 ): {
   distances: { [key: string]: number };
   visited: Cell[];
@@ -59,7 +59,7 @@ export const dijkstra = (
 };
 
 export const dijkstraBackTrack = (
-  graph: GraphType,
+  graph: Graph,
   dijkstraState: DijkstraState
 ): Cell[] => {
   if (graph.startCell === undefined || graph.finishCell === undefined) {

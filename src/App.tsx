@@ -5,7 +5,7 @@ import {
   GraphActions,
   GraphAlgorithms,
   GraphHelper,
-  GraphType,
+  Graph,
   UpdateGraphPayload,
 } from "./ts/GraphHelper";
 import "./App.css";
@@ -28,7 +28,7 @@ const COLS = 40;
 // - action: The action object containing information about the update.
 // Return Value:
 // - A new state representing the updated grid after applying the action.
-const graphReducer = (state: GraphType, action: GraphAction): GraphType => {
+const graphReducer = (state: Graph, action: GraphAction): Graph => {
   switch (action.type) {
     case GraphActions.UpdateCell:
       const updatedGraph = state.graph.map((row, rowIndex) =>
@@ -73,7 +73,7 @@ let dijkstraState: DijkstraState = {
   visited: undefined,
 };
 
-const initialGraph: GraphType = {
+const initialGraph: Graph = {
   startCell: undefined,
   finishCell: undefined,
   graph: [],
@@ -214,6 +214,11 @@ function App() {
     });
   };
 
+  
+  // Function to handle user pressing the go button. If a start and
+  // finish cell have been chosen, then the function checks to see
+  // which algorithm is chosen, and attempts to run the algorithm,
+  // and animate the graph.
   const handleGoButton = (): void => {
     if (!graph.startCell || !graph.finishCell) {
       setModalMessage("Please place a start and finish cell");

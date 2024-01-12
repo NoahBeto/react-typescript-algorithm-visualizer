@@ -1,6 +1,6 @@
 import { Cell, CellStyles, CellType } from "./cell";
 
-export type GraphType = {
+export type Graph = {
   startCell: Cell | undefined;
   finishCell: Cell | undefined;
   graph: Cell[][];
@@ -66,7 +66,7 @@ export class GraphHelper {
     return res;
   }
 
-  static getCell(graph: GraphType, row: number, col: number): Cell {
+  static getCell(graph: Graph, row: number, col: number): Cell {
     if (
       !(
         graph &&
@@ -82,7 +82,7 @@ export class GraphHelper {
     return graph.graph[row][col];
   }
 
-  static getNeighbors(graph: GraphType, cell: Cell): Cell[] {
+  static getNeighbors(graph: Graph, cell: Cell): Cell[] {
     const neighbors: Cell[] = [];
 
     // Example: Check top, bottom, left, and right neighbors
