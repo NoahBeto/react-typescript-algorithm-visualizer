@@ -146,6 +146,12 @@ function App() {
     style?: CellStyles,
     cellType?: CellType
   ): void => {
+    if (
+      GraphHelper.getCell(graph, row, col).cellType === CellType.Start ||
+      GraphHelper.getCell(graph, row, col).cellType === CellType.Finish
+    ) {
+      return;
+    }
     // set the clicked cell to the desired type
     style = selectedCellStyleToPlace;
     cellType = selectedCellTypeToPlace;
@@ -214,7 +220,6 @@ function App() {
     });
   };
 
-  
   // Function to handle user pressing the go button. If a start and
   // finish cell have been chosen, then the function checks to see
   // which algorithm is chosen, and attempts to run the algorithm,
