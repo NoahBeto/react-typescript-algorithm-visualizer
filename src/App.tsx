@@ -13,7 +13,7 @@ import { CellNode } from "./components/CellNode";
 import { AlertMessage } from "./components/AlertMessage";
 import { DijkstraState, dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
 
-const ROWS = 10;
+const ROWS = 25;
 
 // ---------------------------------------------------------
 // DO NOT CHANGE!!!
@@ -81,6 +81,7 @@ const initialGraph: Graph = {
 
 function App() {
   const [graph, dispatch] = useReducer(graphReducer, initialGraph);
+  const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
   const [selectedCellStyleToPlace, setSelectedCellStyleToPlace] =
     useState<CellStyles>(CellStyles.Normal);
   const [selectedCellTypeToPlace, setSelectedCellTypeToPlace] =
@@ -136,6 +137,81 @@ function App() {
   ): void => {
     setSelectedCellStyleToPlace(style);
     setSelectedCellTypeToPlace(cellType);
+  };
+
+  // Function to update a cell in the grid
+  // Parameters:
+  // - row: The row index of the cell to be updated.
+  // - col: The column index of the cell to be updated.
+  // - style: The new style to be assigned to the cell.
+  // Return Value: None (dispatches an action to update the grid state)
+  const updateCell = (
+    row: number,
+    col: number,
+    style: CellStyles,
+    cellType: CellType
+  ): void => {
+    dispatch({
+      type: GraphActions.UpdateCell,
+      payload: { row, col, style, cellType },
+    });
+  };
+
+  const animateDijkstra = async () => {
+    if (!dijkstraState.visited || !dijkstraState.path) return;
+
+    // animate dijkstra searching for finish cell
+    for (const cell of dijkstraState.visited) {
+      updateCell(
+        cell.posRow,
+        cell.posCol,
+        CellStyles.SubtleHighlight,
+        cell.cellType
+      );
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      if (
+        cell.posRow === graph.finishCell?.posRow &&
+        cell.posCol === graph.finishCell?.posCol
+      )
+        break;
+    }
+
+    // animate shortest path from start to finish cell
+    for (const cell of dijkstraState.path) {
+      updateCell(cell.posRow, cell.posCol, CellStyles.Highlight, cell.cellType);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      if (
+        cell.posRow === graph.finishCell?.posRow &&
+        cell.posCol === graph.finishCell?.posCol
+      )
+        break;
+    }
+  };
+
+  // Function to handle user pressing the go button. If a start and
+  // finish cell have been chosen, then the function checks to see
+  // which algorithm is chosen, and attempts to run the algorithm,
+  // and animate the graph.
+  const handleGoButton = (): void => {
+    if (!graph.startCell || !graph.finishCell) {
+      setModalMessage("Please place a start and finish cell");
+      setIsModalOpen(true);
+      return;
+    }
+
+    switch (currentAlgorithm) {
+      case GraphAlgorithms.Dijkstra:
+        const res = dijkstra(graph);
+        dijkstraState.distances = res.distances;
+        dijkstraState.visited = res.visited;
+        dijkstraState.path = dijkstraBackTrack(graph, dijkstraState);
+        animateDijkstra();
+        break;
+
+      default:
+        setModalMessage("Please select an algorithm");
+        setIsModalOpen(true);
+    }
   };
 
   // Handles updating the clicked cell based on the current desired
@@ -202,79 +278,18 @@ function App() {
     }
   };
 
-  // Function to update a cell in the grid
-  // Parameters:
-  // - row: The row index of the cell to be updated.
-  // - col: The column index of the cell to be updated.
-  // - style: The new style to be assigned to the cell.
-  // Return Value: None (dispatches an action to update the grid state)
-  const updateCell = (
-    row: number,
-    col: number,
-    style: CellStyles,
-    cellType: CellType
-  ): void => {
-    dispatch({
-      type: GraphActions.UpdateCell,
-      payload: { row, col, style, cellType },
-    });
+  // Handles when the user is placing walls and drags across cells
+  const handleMouseEnterCell = (row: number, col: number): void => {
+    if (!isMouseDown) return;
+    handleCellClick(row, col);
   };
 
-  // Function to handle user pressing the go button. If a start and
-  // finish cell have been chosen, then the function checks to see
-  // which algorithm is chosen, and attempts to run the algorithm,
-  // and animate the graph.
-  const handleGoButton = (): void => {
-    if (!graph.startCell || !graph.finishCell) {
-      setModalMessage("Please place a start and finish cell");
-      setIsModalOpen(true);
-      return;
-    }
-
-    switch (currentAlgorithm) {
-      case GraphAlgorithms.Dijkstra:
-        const res = dijkstra(graph);
-        dijkstraState.distances = res.distances;
-        dijkstraState.visited = res.visited;
-        dijkstraState.path = dijkstraBackTrack(graph, dijkstraState);
-        animateDijkstra();
-        break;
-
-      default:
-        setModalMessage("Please select an algorithm");
-        setIsModalOpen(true);
-    }
+  const handleMouseDown = () => {
+    setIsMouseDown(true);
   };
 
-  const animateDijkstra = async () => {
-    if (!dijkstraState.visited || !dijkstraState.path) return;
-
-    // animate dijkstra searching for finish cell
-    for (const cell of dijkstraState.visited) {
-      updateCell(
-        cell.posRow,
-        cell.posCol,
-        CellStyles.SubtleHighlight,
-        cell.cellType
-      );
-      await new Promise((resolve) => setTimeout(resolve, 25));
-      if (
-        cell.posRow === graph.finishCell?.posRow &&
-        cell.posCol === graph.finishCell?.posCol
-      )
-        break;
-    }
-
-    // animate shortest path from start to finish cell
-    for (const cell of dijkstraState.path) {
-      updateCell(cell.posRow, cell.posCol, CellStyles.Highlight, cell.cellType);
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      if (
-        cell.posRow === graph.finishCell?.posRow &&
-        cell.posCol === graph.finishCell?.posCol
-      )
-        break;
-    }
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
   };
 
   const closeModal = () => {
@@ -348,7 +363,11 @@ function App() {
             </div>
           </div>
         </div>
-        <div className="graphWrapper">
+        <div
+          className="graphWrapper"
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+        >
           {graph.graph.map((row, index) =>
             row.map((item, _index) => (
               <CellNode
@@ -357,6 +376,7 @@ function App() {
                 row={item.posRow}
                 col={item.posCol}
                 onClick={handleCellClick}
+                _onMouseEnter={handleMouseEnterCell}
               ></CellNode>
             ))
           )}
