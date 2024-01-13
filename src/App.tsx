@@ -13,7 +13,7 @@ import { CellNode } from "./components/CellNode";
 import { AlertMessage } from "./components/AlertMessage";
 import { DijkstraState, dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
 
-const ROWS = 25;
+const ROWS = 20;
 
 // ---------------------------------------------------------
 // DO NOT CHANGE!!!
@@ -368,8 +368,8 @@ function App() {
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
         >
-          {graph.graph.map((row, index) =>
-            row.map((item, _index) => (
+          {graph.graph.map((row) =>
+            row.map((item) => (
               <CellNode
                 key={`${item.posRow}-${item.posCol}`}
                 cellStyles={item.cellStyle}
