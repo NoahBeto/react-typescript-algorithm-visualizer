@@ -375,7 +375,7 @@ function App() {
                 cellStyles={item.cellStyle}
                 row={item.posRow}
                 col={item.posCol}
-                onClick={handleCellClick}
+                onMouseDown={handleCellClick}
                 _onMouseEnter={handleMouseEnterCell}
               ></CellNode>
             ))

@@ -5,19 +5,19 @@ export const CellNode = ({
   cellStyles,
   row,
   col,
-  onClick,
+  onMouseDown,
   _onMouseEnter,
 }: {
   cellStyles: CellStyles;
   row: number;
   col: number;
-  onClick: (row: number, col: number, style?: CellStyles) => void;
+  onMouseDown: (row: number, col: number, style?: CellStyles) => void;
   _onMouseEnter: (row: number, col: number) => void;
 }) => {
   const styles = `cell ${cellStyles}`;
 
   const handleDivClick = () => {
-    onClick(row, col);
+    onMouseDown(row, col);
   };
 
   const handleMouseEnter = () => {
@@ -28,7 +28,7 @@ export const CellNode = ({
     <>
       <div
         className={styles}
-        onClick={handleDivClick}
+        onMouseDown={handleDivClick}
         onMouseEnter={handleMouseEnter}
       ></div>
     </>
