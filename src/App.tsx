@@ -57,6 +57,8 @@ const graphReducer = (state: Graph, action: GraphAction): Graph => {
           action.payload.rows,
           action.payload.columns
         ),
+        startCell: undefined,
+        finishCell: undefined,
       };
 
     // Handle other action types if needed
