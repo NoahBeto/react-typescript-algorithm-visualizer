@@ -378,6 +378,19 @@ function App() {
               <div className="cell-wall selector-icon "></div>
               <div>Set Wall Cell</div>
             </div>
+            <div
+              className={`selector  ${
+                selectedCellTypeToPlace === CellType.Normal
+                  ? "selector-highlight"
+                  : "selector-normal"
+              }`}
+              onClick={() =>
+                handleCellTypeToPlace(CellStyles.Normal, CellType.Normal)
+              }
+            >
+              <div className="cell-normal selector-icon "></div>
+              <div>Set Normal Cell</div>
+            </div>
           </div>
         </div>
         <div
