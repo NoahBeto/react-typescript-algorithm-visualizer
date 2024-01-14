@@ -28,7 +28,7 @@
   border: none;
   color: var(--text);
   padding: 1rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
   border-radius: 0.5rem;
 }
 
@@ -41,7 +41,7 @@
 .dropbtn {
   width: 100%;
   padding: 1rem;
-  font-size: 1.25rem;
+  font-size: 1rem;
   background: var(--static3);
   color: var(--text);
   border: none;
@@ -106,7 +106,7 @@
 }
 
 .visualize-btn {
-  font-size: 1.25rem;
+  font-size: 1rem;
   padding: 1rem 2rem;
   border-radius: 0.5rem;
   background: var(--primary);
@@ -127,6 +127,7 @@
 }
 
 .selector {
+  font-size: 1rem;
   display: flex;
   gap: 0.25rem;
   align-items: center;
