@@ -306,7 +306,7 @@ function App() {
         ></AlertMessage>
         <div className="navbar">
           <button className="visualize-btn" onClick={() => handleGoButton()}>
-            Go
+            VISUALIZE
           </button>
           <button
             className="reset-graph"

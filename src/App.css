@@ -13,7 +13,7 @@
 
 .navbar {
   height: 100%;
-  width: fit-content;
+  min-width: 225px;
   background: var(--static5);
   display: flex;
   flex-direction: column;
@@ -39,7 +39,7 @@
 }
 
 .dropbtn {
-  min-width: 150px;
+  width: 100%;
   padding: 1rem;
   font-size: 1.25rem;
   background: var(--static3);
@@ -85,13 +85,39 @@
   background-color: var(--accent);
 }
 
+@keyframes btnHoverGlowIn {
+  from {
+    box-shadow: 1px 1px 20px #3b93f71d;
+  }
+
+  to {
+    box-shadow: 1px 1px 20px 5px #3b93f738;
+  }
+}
+
+@keyframes btnHoverGlowOut {
+  from {
+    box-shadow: 1px 1px 20px 5px #3b93f738;
+  }
+
+  to {
+    box-shadow: 1px 1px 20px #3b93f71d;
+  }
+}
+
 .visualize-btn {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   padding: 1rem 2rem;
   border-radius: 0.5rem;
   background: var(--primary);
-  border: 3px solid rgb(28, 56, 117);
+  border: none;
+  box-shadow: 1px 1px 20px #3b93f71d;
   color: var(--text);
+  animation: btnHoverGlowOut 0.5s;
+}
+
+.visualize-btn:hover {
+  animation: btnHoverGlowIn 0.5s forwards;
 }
 
 .start-end-selector-container {
