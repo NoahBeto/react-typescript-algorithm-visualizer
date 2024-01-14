@@ -340,7 +340,7 @@ function App() {
                 handleCellTypeToPlace(CellStyles.Start, CellType.Start)
               }
             >
-              <div className="cell cell-start"></div>
+              <div className="cell-start selector-icon"></div>
               <div>Set Start Cell</div>
             </div>
             <div
@@ -349,7 +349,7 @@ function App() {
                 handleCellTypeToPlace(CellStyles.Finish, CellType.Finish)
               }
             >
-              <div className="cell cell-finish"></div>
+              <div className="cell-finish selector-icon"></div>
               <div>Set Finish Cell</div>
             </div>
             <div
@@ -358,7 +358,7 @@ function App() {
                 handleCellTypeToPlace(CellStyles.Wall, CellType.Wall)
               }
             >
-              <div className="cell cell-wall"></div>
+              <div className="cell-wall selector-icon "></div>
               <div>Set Wall Cell</div>
             </div>
           </div>

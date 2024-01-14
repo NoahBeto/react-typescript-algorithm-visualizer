@@ -1,5 +1,7 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 :root {
@@ -13,8 +15,20 @@
   --static25: rgba(255, 255, 255, 0.25);
 }
 
+/* :root {
+  --bg: #e1eefe;
+  --primary: #5da6f8;
+  --secondary: #9dc9fb;
+  --accent: #0860c4;
+  --text: #021831;
+  --static3: rgba(0, 0, 0, 0.03);
+  --static5: rgba(0, 0, 0, 0.05);
+  --static25: rgba(0, 0, 0, 0.25);
+} */
+
 body {
   height: 100vh;
   background: var(--bg);
   margin: 0;
+  font-family: Arial, sans-serif;
 }

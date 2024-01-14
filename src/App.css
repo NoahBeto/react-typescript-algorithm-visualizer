@@ -101,6 +101,11 @@
   color: var(--text);
 }
 
+.selector-icon {
+  width: 25px;
+  height: 25px;
+}
+
 .selector-highlight {
   background: var(--static25);
 }
