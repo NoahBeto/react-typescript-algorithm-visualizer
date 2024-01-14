@@ -305,12 +305,16 @@ function App() {
           message={modalMessage}
         ></AlertMessage>
         <div className="navbar">
+          <button className="visualize-btn" onClick={() => handleGoButton()}>
+            Go
+          </button>
           <button
             className="reset-graph"
             onClick={() => handleResetGraphButton()}
           >
             Reset Graph
           </button>
+          <hr className="rounded separator" />
           <div className="dropdown">
             <button className="dropbtn">
               {currentAlgorithm ? currentAlgorithm : "(Select Algorithm)"}
@@ -330,9 +334,8 @@ function App() {
               </div> */}
             </div>
           </div>
-          <button className="visualize-btn" onClick={() => handleGoButton()}>
-            Go
-          </button>
+          <hr className="rounded separator" />
+
           <div className="start-end-selector-container">
             <div
               className="selector selector-normal"
