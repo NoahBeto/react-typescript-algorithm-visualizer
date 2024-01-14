@@ -340,7 +340,11 @@ function App() {
 
           <div className="start-end-selector-container">
             <div
-              className="selector selector-normal"
+              className={`selector  ${
+                selectedCellTypeToPlace === CellType.Start
+                  ? "selector-highlight"
+                  : "selector-normal"
+              }`}
               onClick={() =>
                 handleCellTypeToPlace(CellStyles.Start, CellType.Start)
               }
@@ -349,7 +353,11 @@ function App() {
               <div>Set Start Cell</div>
             </div>
             <div
-              className="selector selector-normal"
+              className={`selector  ${
+                selectedCellTypeToPlace === CellType.Finish
+                  ? "selector-highlight"
+                  : "selector-normal"
+              }`}
               onClick={() =>
                 handleCellTypeToPlace(CellStyles.Finish, CellType.Finish)
               }
@@ -358,7 +366,11 @@ function App() {
               <div>Set Finish Cell</div>
             </div>
             <div
-              className="selector selector-normal"
+              className={`selector  ${
+                selectedCellTypeToPlace === CellType.Wall
+                  ? "selector-highlight"
+                  : "selector-normal"
+              }`}
               onClick={() =>
                 handleCellTypeToPlace(CellStyles.Wall, CellType.Wall)
               }

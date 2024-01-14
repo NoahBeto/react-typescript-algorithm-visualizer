@@ -142,10 +142,16 @@
 
 .selector-highlight {
   background: var(--static25);
+  transition: 0.25s;
+}
+
+.blue {
+  background: blue;
 }
 
 .selector-normal {
   background: var(--static3);
+  transition: 0.25s;
 }
 
 .graphWrapper {
