@@ -123,7 +123,24 @@
 }
 
 .graphWrapper {
-  width: 1600px;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(40, minmax(40px, 1fr));
+  grid-template-rows: repeat(20, minmax(40px, 1fr));
+  overflow: scroll;
+  margin-inline: auto;
+}
+
+::-webkit-scrollbar {
+  background: var(--static-3);
+  width: 7px;
+  border-radius: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--static-3);
+  border-radius: 7px;
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--static-3);
 }
