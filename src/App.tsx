@@ -420,7 +420,11 @@ function App() {
               className="selector selector-normal"
               onClick={() => tempHandle()}
             >
-              <img src={shuffleIcon} alt="" className="selector-icon" />
+              <img
+                src={shuffleIcon}
+                alt="shuffle icon"
+                className="selector-icon"
+              />
               <div>Recur. Backtrack</div>
             </div>
           </div>
