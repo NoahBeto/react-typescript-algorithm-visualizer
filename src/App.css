@@ -8,6 +8,12 @@
   text-align: center;
 }
 
+.title-small {
+  color: var(--secondary);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
 /* Layout Styles */
 .wrapper {
   height: 100vh;
@@ -39,6 +45,18 @@
   box-shadow: 1px 1px 20px #3b93f71d;
   color: var(--text);
   animation: btnHoverGlowOut 0.5s;
+}
+
+/* Speed selector styles */
+ul {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+ul li {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
 }
 
 .reset-graph {

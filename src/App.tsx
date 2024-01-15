@@ -92,8 +92,21 @@ const initialGraph: Graph = {
   graph: [],
 };
 
+enum TraceAnimationSpeed {
+  SPEED_ONE = 50,
+  SPEED_TWO = 25,
+  SPEED_THREE = 5,
+}
+
 function App() {
   const [graph, dispatch] = useReducer(graphReducer, initialGraph);
+  const [traceSearchSpeed, setTraceSearchSpeed] = useState<TraceAnimationSpeed>(
+    TraceAnimationSpeed.SPEED_TWO
+  );
+  const [tracePathSpeed, setTracePathSpeed] = useState<TraceAnimationSpeed>(
+    TraceAnimationSpeed.SPEED_TWO
+  );
+
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
   const [selectedCellStyleToPlace, setSelectedCellStyleToPlace] =
     useState<CellStyles>(CellStyles.Normal);
@@ -173,8 +186,18 @@ function App() {
   };
 
   // Handle clicking the desired path finding algorithm
-  const handleChooseAlgorithm = (clicked: GraphAlgorithms): void => {
+  const handleSelectAlgorithmBtn = (clicked: GraphAlgorithms): void => {
     setCurrentAlgorithm(clicked);
+  };
+
+  // Handle clicking the desired speed for tracing the search
+  const handleTraceSearchSpeedBtns = (speed: TraceAnimationSpeed) => {
+    setTraceSearchSpeed(speed);
+  };
+
+  // Handle clicking the desired speed for tracing the path
+  const handleTracePathSpeedBtns = (speed: TraceAnimationSpeed) => {
+    setTracePathSpeed(speed);
   };
 
   // Handle clicking on the desired cell to place in the graph
@@ -219,7 +242,7 @@ function App() {
         CellStyles.SubtleHighlight,
         cell.cellType
       );
-      await new Promise((resolve) => setTimeout(resolve, 5));
+      await new Promise((resolve) => setTimeout(resolve, traceSearchSpeed));
       if (
         cell.posRow === graph.finishCell?.posRow &&
         cell.posCol === graph.finishCell?.posCol
@@ -230,7 +253,7 @@ function App() {
     // animate shortest path from start to finish cell
     for (const cell of dijkstraState.path) {
       updateCell(cell.posRow, cell.posCol, CellStyles.Highlight, cell.cellType);
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, tracePathSpeed));
       if (
         cell.posRow === graph.finishCell?.posRow &&
         cell.posCol === graph.finishCell?.posCol
@@ -424,7 +447,9 @@ function App() {
             <div className="dropdown-content">
               <div
                 className="dropdown-item"
-                onClick={() => handleChooseAlgorithm(GraphAlgorithms.Dijkstra)}
+                onClick={() =>
+                  handleSelectAlgorithmBtn(GraphAlgorithms.Dijkstra)
+                }
               >
                 Dijkstra
               </div>
@@ -435,6 +460,90 @@ function App() {
                 A*
               </div> */}
             </div>
+          </div>
+
+          <div>
+            <h4 className="title-small">Trace Search Speed</h4>
+            <ul className="selector selector-normal">
+              <li
+                onClick={() =>
+                  handleTraceSearchSpeedBtns(TraceAnimationSpeed.SPEED_ONE)
+                }
+                className={
+                  traceSearchSpeed === TraceAnimationSpeed.SPEED_ONE
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                1
+              </li>
+              <li
+                onClick={() =>
+                  handleTraceSearchSpeedBtns(TraceAnimationSpeed.SPEED_TWO)
+                }
+                className={
+                  traceSearchSpeed === TraceAnimationSpeed.SPEED_TWO
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                2
+              </li>
+              <li
+                onClick={() =>
+                  handleTraceSearchSpeedBtns(TraceAnimationSpeed.SPEED_THREE)
+                }
+                className={
+                  traceSearchSpeed === TraceAnimationSpeed.SPEED_THREE
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                3
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="title-small">Trace Path Speed</h4>
+            <ul className="selector selector-normal">
+              <li
+                onClick={() =>
+                  handleTracePathSpeedBtns(TraceAnimationSpeed.SPEED_ONE)
+                }
+                className={
+                  tracePathSpeed === TraceAnimationSpeed.SPEED_ONE
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                1
+              </li>
+              <li
+                onClick={() =>
+                  handleTracePathSpeedBtns(TraceAnimationSpeed.SPEED_TWO)
+                }
+                className={
+                  tracePathSpeed === TraceAnimationSpeed.SPEED_TWO
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                2
+              </li>
+              <li
+                onClick={() =>
+                  handleTracePathSpeedBtns(TraceAnimationSpeed.SPEED_THREE)
+                }
+                className={
+                  tracePathSpeed === TraceAnimationSpeed.SPEED_THREE
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                3
+              </li>
+            </ul>
           </div>
 
           <div className="start-end-selector-container">

@@ -5,6 +5,10 @@
   user-select: none;
 }
 
+ul {
+  list-style: none;
+}
+
 :root {
   --bg: #010e1e;
   --primary: #074fa2;
