@@ -24,9 +24,6 @@ export const generateMaze = (
   const randomRowIndex = getRandomIntInclusive(1, rows - 2);
   const randomColIndex = getRandomIntInclusive(1, cols - 2);
 
-  console.log(randomRowIndex);
-  console.log(randomColIndex);
-
   // chose a starting cell
   const startCell = maze[randomRowIndex][randomColIndex];
   startCell.cellType = CellType.Normal;
