@@ -120,6 +120,42 @@ function App() {
     });
   };
 
+  const setAllCellsToNormalExceptWallsStartFinish = () => {
+    const updatedGraphWithoutWalls: Cell[][] = graph.graph.map((row) =>
+      row.map((cell) =>
+        cell.cellType === CellType.Wall ||
+        cell.cellType === CellType.Start ||
+        cell.cellType === CellType.Finish
+          ? cell
+          : { ...cell, cellType: CellType.Normal, cellStyle: CellStyles.Normal }
+      )
+    );
+
+    let data: SetGraphPayload = {
+      graph: updatedGraphWithoutWalls,
+    };
+
+    dispatch({
+      type: GraphActions.SetGraph,
+      payload: data,
+    });
+
+    // set the start cell and finish cell styles back
+    updateCell(
+      graph.startCell!.posRow!,
+      graph.startCell!.posCol!,
+      CellStyles.Start,
+      CellType.Start
+    );
+
+    updateCell(
+      graph.finishCell!.posRow!,
+      graph.finishCell!.posCol!,
+      CellStyles.Finish,
+      CellType.Finish
+    );
+  };
+
   // initialize graph on initial load
   useEffect(() => {
     initializeGraph();
@@ -215,6 +251,9 @@ function App() {
       return;
     }
 
+    // if the user reruns the visualizer, we need to reset
+    // all of the cells that are not walls, start, or finish
+    setAllCellsToNormalExceptWallsStartFinish();
     switch (currentAlgorithm) {
       case GraphAlgorithms.Dijkstra:
         let res: {
