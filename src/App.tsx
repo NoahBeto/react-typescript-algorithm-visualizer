@@ -213,7 +213,18 @@ function App() {
 
     switch (currentAlgorithm) {
       case GraphAlgorithms.Dijkstra:
-        const res = dijkstra(graph);
+        let res: {
+          distances: { [key: string]: number };
+          visited: Cell[];
+        };
+        try {
+          res = dijkstra(graph);
+        } catch (error) {
+          setModalMessage("No path from start cell to finish cell");
+          setIsModalOpen(true);
+          return;
+        }
+
         dijkstraState.distances = res.distances;
         dijkstraState.visited = res.visited;
         dijkstraState.path = dijkstraBackTrack(graph, dijkstraState);

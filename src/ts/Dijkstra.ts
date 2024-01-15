@@ -55,6 +55,11 @@ export const dijkstra = (
     }
   }
 
+  // Check if the finish cell has been visited
+  if (!visited[`${graph.finishCell.posRow}-${graph.finishCell.posCol}`]) {
+    throw new Error("No path from start cell to finish cell");
+  }
+
   return { distances, visited: visitedCells };
 };
 
