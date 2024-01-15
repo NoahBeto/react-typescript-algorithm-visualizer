@@ -18,13 +18,13 @@ import { generateMaze } from "./ts/RecursiveBacktracking";
 import shuffleIcon from "./assets/icons/shuffleSolid.svg";
 import OverlayDisable from "./components/OverlayDisable";
 
-const ROWS = 19;
+const ROWS = 21;
 
 // ---------------------------------------------------------
 // DO NOT CHANGE!!!
 // TODO: Make columns dynamic. As of now, must be hard coded
 //       because of CSS styling
-const COLS = 39;
+const COLS = 41;
 // ---------------------------------------------------------
 
 // Reducer function to update a cell's style in the grid
