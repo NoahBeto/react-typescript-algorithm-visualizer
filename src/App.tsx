@@ -106,6 +106,8 @@ function App() {
   const [tracePathSpeed, setTracePathSpeed] = useState<TraceAnimationSpeed>(
     TraceAnimationSpeed.SPEED_TWO
   );
+  const [traceMazeGenerationSpeed, setTraceMazeGenerationSpeed] =
+    useState<TraceAnimationSpeed>(TraceAnimationSpeed.SPEED_THREE);
 
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
   const [selectedCellStyleToPlace, setSelectedCellStyleToPlace] =
@@ -198,6 +200,11 @@ function App() {
   // Handle clicking the desired speed for tracing the path
   const handleTracePathSpeedBtns = (speed: TraceAnimationSpeed) => {
     setTracePathSpeed(speed);
+  };
+
+  // Handle clicking the desired speed for tracing the path
+  const handleTraceMazeGenerationSpeedBtns = (speed: TraceAnimationSpeed) => {
+    setTraceMazeGenerationSpeed(speed);
   };
 
   // Handle clicking on the desired cell to place in the graph
@@ -383,7 +390,7 @@ function App() {
     // animate recurrsive backtracking
     for (const cell of res.steps) {
       updateCell(cell.posRow, cell.posCol, CellStyles.Normal, cell.cellType);
-      await new Promise((resolve) => setTimeout(resolve, 5));
+      await new Promise((resolve) => setTimeout(resolve, traceMazeGenerationSpeed));
       if (
         cell.posRow === graph.finishCell?.posRow &&
         cell.posCol === graph.finishCell?.posCol
@@ -614,6 +621,53 @@ function App() {
               />
               <div>Recur. Backtrack</div>
             </div>
+          </div>
+          <div>
+            <h4 className="title-small">Trace Maze Speed</h4>
+            <ul className="selector selector-normal">
+              <li
+                onClick={() =>
+                  handleTraceMazeGenerationSpeedBtns(
+                    TraceAnimationSpeed.SPEED_ONE
+                  )
+                }
+                className={
+                  traceMazeGenerationSpeed === TraceAnimationSpeed.SPEED_ONE
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                1
+              </li>
+              <li
+                onClick={() =>
+                  handleTraceMazeGenerationSpeedBtns(
+                    TraceAnimationSpeed.SPEED_TWO
+                  )
+                }
+                className={
+                  traceMazeGenerationSpeed === TraceAnimationSpeed.SPEED_TWO
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                2
+              </li>
+              <li
+                onClick={() =>
+                  handleTraceMazeGenerationSpeedBtns(
+                    TraceAnimationSpeed.SPEED_THREE
+                  )
+                }
+                className={
+                  traceMazeGenerationSpeed === TraceAnimationSpeed.SPEED_THREE
+                    ? "selector-highlight"
+                    : "selector-normal"
+                }
+              >
+                3
+              </li>
+            </ul>
           </div>
         </div>
 
