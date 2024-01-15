@@ -75,6 +75,33 @@ export class GraphHelper {
     return res;
   }
 
+  static generateAllWallGraph(rows: number, cols: number): Cell[][] {
+    if (rows <= 0 || cols <= 0) {
+      throw new Error("Rows and cols must be positive integers");
+    }
+    let res: Cell[][] = [];
+
+    for (let i = 0; i < rows; i++) {
+      let row: Cell[] = [];
+      for (let j = 0; j < cols; j++) {
+        row.push({
+          posRow: i,
+          posCol: j,
+          cellType: CellType.Wall,
+          cellStyle: CellStyles.Wall,
+          g: 0,
+          h: 0,
+          f: 0,
+          parent: undefined,
+          isOnOpenList: undefined,
+          isOnClosedList: undefined,
+        });
+      }
+      res.push(row);
+    }
+    return res;
+  }
+
   static getCell(graph: Graph, row: number, col: number): Cell {
     if (
       !(

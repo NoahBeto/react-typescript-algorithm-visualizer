@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useState } from "react";
-import { CellStyles, CellType } from "./ts/cell";
+import { Cell, CellStyles, CellType } from "./ts/cell";
 import {
   GraphAction,
   GraphActions,
@@ -301,10 +301,31 @@ function App() {
     }
   };
 
-  const tempHandle = () => {
+  const handleRecursiveBacktrackBtn = async () => {
     const res = generateMaze(ROWS, COLS);
+
+    // set graph to all walls
+    let _data: SetGraphPayload = {
+      graph: GraphHelper.generateAllWallGraph(ROWS, COLS),
+    };
+    dispatch({
+      type: GraphActions.SetGraph,
+      payload: _data,
+    });
+
+    // animate recurrsive backtracking
+    for (const cell of res.steps) {
+      updateCell(cell.posRow, cell.posCol, CellStyles.Normal, cell.cellType);
+      await new Promise((resolve) => setTimeout(resolve, 25));
+      if (
+        cell.posRow === graph.finishCell?.posRow &&
+        cell.posCol === graph.finishCell?.posCol
+      )
+        break;
+    }
+
     let data: SetGraphPayload = {
-      graph: res,
+      graph: res.maze,
     };
     dispatch({
       type: GraphActions.SetGraph,
@@ -429,7 +450,7 @@ function App() {
           <div className="maze-generation-selectors-container">
             <div
               className="selector selector-normal"
-              onClick={() => tempHandle()}
+              onClick={() => handleRecursiveBacktrackBtn()}
             >
               <img
                 src={shuffleIcon}

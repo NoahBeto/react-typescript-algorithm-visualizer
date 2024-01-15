@@ -1,6 +1,9 @@
 import { Cell, CellStyles, CellType } from "./cell";
 
-export const generateMaze = (rows: number, cols: number): Cell[][] => {
+export const generateMaze = (
+  rows: number,
+  cols: number
+): { maze: Cell[][]; steps: Cell[] } => {
   const maze: Cell[][] = [];
 
   // Initialize maze with walls
@@ -18,12 +21,17 @@ export const generateMaze = (rows: number, cols: number): Cell[][] => {
   startCell.cellStyle = CellStyles.Normal;
 
   // recursive backtracking
-  recursiveBacktrack(maze, startCell);
+  const steps: Cell[] = [];
+  recursiveBacktrack(maze, startCell, steps);
 
-  return maze;
+  return { maze, steps };
 };
 
-const recursiveBacktrack = (maze: Cell[][], currentCell: Cell) => {
+const recursiveBacktrack = (
+  maze: Cell[][],
+  currentCell: Cell,
+  steps: Cell[]
+) => {
   const neighbors = getNeighbors(maze, currentCell);
 
   // shuffle neighbors randomly
@@ -44,7 +52,15 @@ const recursiveBacktrack = (maze: Cell[][], currentCell: Cell) => {
         (posCol + currentCell.posCol) / 2
       ].cellStyle = CellStyles.Normal;
 
-      recursiveBacktrack(maze, maze[posRow][posCol]);
+      steps.push(currentCell);
+      steps.push(
+        maze[(posRow + currentCell.posRow) / 2][
+          (posCol + currentCell.posCol) / 2
+        ]
+      );
+      steps.push(maze[posRow][posCol]);
+
+      recursiveBacktrack(maze, maze[posRow][posCol], steps);
     }
   }
 };
