@@ -175,8 +175,8 @@
 /* Graph Styles */
 .graphWrapper {
   display: grid;
-  grid-template-columns: repeat(40, minmax(40px, 1fr));
-  grid-template-rows: repeat(20, minmax(40px, 1fr));
+  grid-template-columns: repeat(39, minmax(40px, 1fr));
+  grid-template-rows: repeat(19, minmax(40px, 1fr));
   overflow: scroll;
   margin-inline: auto;
 }
