@@ -16,6 +16,7 @@ import { DijkstraState, dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
 import { generateMaze } from "./ts/RecursiveBacktracking";
 
 import shuffleIcon from "./assets/icons/shuffleSolid.svg";
+import OverlayDisable from "./components/OverlayDisable";
 
 const ROWS = 19;
 
@@ -106,6 +107,7 @@ function App() {
   const [modalMessage, setModalMessage] = useState<string>(
     "Error, invalid input"
   );
+  const [overlayDisable, setOverlayDisable] = useState<boolean>(false);
 
   // Function to initialize the graph
   // Return Value: None (dispatches an action to update the grid state)
@@ -172,6 +174,7 @@ function App() {
   const animateDijkstra = async () => {
     if (!dijkstraState.visited || !dijkstraState.path) return;
 
+    setOverlayDisable(true);
     // animate dijkstra searching for finish cell
     for (const cell of dijkstraState.visited) {
       updateCell(
@@ -198,6 +201,7 @@ function App() {
       )
         break;
     }
+    setOverlayDisable(false);
   };
 
   // Function to handle user pressing the go button. If a start and
@@ -302,6 +306,7 @@ function App() {
   };
 
   const handleRecursiveBacktrackBtn = async () => {
+    setOverlayDisable(true);
     const res = generateMaze(ROWS, COLS);
 
     // set graph to all walls
@@ -316,7 +321,7 @@ function App() {
     // animate recurrsive backtracking
     for (const cell of res.steps) {
       updateCell(cell.posRow, cell.posCol, CellStyles.Normal, cell.cellType);
-      await new Promise((resolve) => setTimeout(resolve, 25));
+      await new Promise((resolve) => setTimeout(resolve, 5));
       if (
         cell.posRow === graph.finishCell?.posRow &&
         cell.posCol === graph.finishCell?.posCol
@@ -331,6 +336,7 @@ function App() {
       type: GraphActions.SetGraph,
       payload: data,
     });
+    setOverlayDisable(false);
   };
 
   // Handles when the user is placing walls and drags across cells
@@ -354,6 +360,7 @@ function App() {
   return (
     <>
       <div className="wrapper">
+        <OverlayDisable show={overlayDisable} />
         <AlertMessage
           isOpen={isModalOpen}
           onClose={closeModal}
