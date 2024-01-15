@@ -12,13 +12,13 @@ export enum GraphAlgorithms {
 }
 
 export enum GraphActions {
+  SetGraph,
   UpdateCell,
   InitializeGraph,
 }
 
-interface InitializeGraphPayload {
-  rows: number;
-  columns: number;
+export interface SetGraphPayload {
+  graph: Cell[][];
 }
 
 export interface UpdateGraphPayload {
@@ -28,7 +28,16 @@ export interface UpdateGraphPayload {
   cellType: CellType;
 }
 
+interface InitializeGraphPayload {
+  rows: number;
+  columns: number;
+}
+
 export type GraphAction =
+  | {
+      type: GraphActions.SetGraph;
+      payload: SetGraphPayload;
+    }
   | {
       type: GraphActions.UpdateCell;
       payload: UpdateGraphPayload;

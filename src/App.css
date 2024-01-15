@@ -1,12 +1,18 @@
+/* General Styles */
 .separator {
   border: 1px solid var(--static5);
 }
 
+.title-medium {
+  color: var(--primary);
+  text-align: center;
+}
+
+/* Layout Styles */
 .wrapper {
   height: 100vh;
   display: flex;
   flex-direction: row;
-  /* justify-content: space-between; */
   align-items: center;
   gap: 5px;
 }
@@ -23,6 +29,18 @@
   padding: 1rem;
 }
 
+/* Button Styles */
+.visualize-btn {
+  font-size: 1rem;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  background: var(--primary);
+  border: none;
+  box-shadow: 1px 1px 20px #3b93f71d;
+  color: var(--text);
+  animation: btnHoverGlowOut 0.5s;
+}
+
 .reset-graph {
   background: var(--static3);
   border: none;
@@ -32,7 +50,11 @@
   border-radius: 0.5rem;
 }
 
-/* The container <div> - needed to position the dropdown content */
+.visualize-btn:hover {
+  animation: btnHoverGlowIn 0.5s forwards;
+}
+
+/* Dropdown Styles */
 .dropdown {
   position: relative;
   display: inline-block;
@@ -49,7 +71,6 @@
   transition: 0.25s;
 }
 
-/* Dropdown Content (Hidden by Default) */
 .dropdown-content {
   display: none;
   flex-direction: column;
@@ -70,21 +91,19 @@
   transition: 0.25s;
 }
 
-/* Change color of dropdown links on hover */
 .dropdown-content .dropdown-item:hover {
   background-color: var(--static3);
 }
 
-/* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
   display: flex;
 }
 
-/* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
   background-color: var(--accent);
 }
 
+/* Animation Styles */
 @keyframes btnHoverGlowIn {
   from {
     box-shadow: 1px 1px 20px #3b93f71d;
@@ -105,6 +124,7 @@
   }
 }
 
+/* Selector Styles */
 .visualize-btn {
   font-size: 1rem;
   padding: 1rem 2rem;
@@ -131,14 +151,15 @@
   display: flex;
   gap: 0.25rem;
   align-items: center;
-  padding: 0.75rem;
+  padding: 1rem;
   border-radius: 0.5rem;
   color: var(--text);
 }
 
 .selector-icon {
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
+  margin-right: 0.25rem;
 }
 
 .selector-highlight {
@@ -146,15 +167,12 @@
   transition: 0.25s;
 }
 
-.blue {
-  background: blue;
-}
-
 .selector-normal {
   background: var(--static3);
   transition: 0.25s;
 }
 
+/* Graph Styles */
 .graphWrapper {
   display: grid;
   grid-template-columns: repeat(40, minmax(40px, 1fr));
@@ -163,6 +181,7 @@
   margin-inline: auto;
 }
 
+/* Scrollbar Styles */
 ::-webkit-scrollbar {
   background: var(--static-3);
   width: 7px;

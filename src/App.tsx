@@ -7,11 +7,15 @@ import {
   GraphHelper,
   Graph,
   UpdateGraphPayload,
+  SetGraphPayload,
 } from "./ts/GraphHelper";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
 import { AlertMessage } from "./components/AlertMessage";
 import { DijkstraState, dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
+import { generateMaze } from "./ts/RecursiveBacktracking";
+
+import shuffleIcon from "./assets/icons/shuffleSolid.svg";
 
 const ROWS = 20;
 
@@ -30,6 +34,12 @@ const COLS = 40;
 // - A new state representing the updated grid after applying the action.
 const graphReducer = (state: Graph, action: GraphAction): Graph => {
   switch (action.type) {
+    case GraphActions.SetGraph:
+      return {
+        ...state,
+        graph: action.payload.graph,
+      };
+
     case GraphActions.UpdateCell:
       const updatedGraph = state.graph.map((row, rowIndex) =>
         rowIndex === action.payload.row
@@ -280,6 +290,17 @@ function App() {
     }
   };
 
+  const tempHandle = () => {
+    const res = generateMaze(ROWS, COLS);
+    let data: SetGraphPayload = {
+      graph: res,
+    };
+    dispatch({
+      type: GraphActions.SetGraph,
+      payload: data,
+    });
+  };
+
   // Handles when the user is placing walls and drags across cells
   const handleMouseEnterCell = (row: number, col: number): void => {
     if (!isMouseDown) return;
@@ -317,6 +338,7 @@ function App() {
             Reset Graph
           </button>
           <hr className="rounded separator" />
+          <h3 className="title-medium">Path Finders</h3>
           <div className="dropdown">
             <button className="dropbtn">
               {currentAlgorithm ? currentAlgorithm : "(Select Algorithm)"}
@@ -336,7 +358,6 @@ function App() {
               </div> */}
             </div>
           </div>
-          <hr className="rounded separator" />
 
           <div className="start-end-selector-container">
             <div
@@ -392,7 +413,19 @@ function App() {
               <div>Set Normal Cell</div>
             </div>
           </div>
+          <hr className="rounded separator" />
+          <h3 className="title-medium">Maze Generation</h3>
+          <div className="maze-generation-selectors-container">
+            <div
+              className="selector selector-normal"
+              onClick={() => tempHandle()}
+            >
+              <img src={shuffleIcon} alt="" className="selector-icon" />
+              <div>Recur. Backtrack</div>
+            </div>
+          </div>
         </div>
+
         <div
           className="graphWrapper"
           onMouseDown={handleMouseDown}
