@@ -15,8 +15,20 @@ export const generateMaze = (
     maze.push(row);
   }
 
+  const getRandomIntInclusive = (min: number, max: number): number => {
+    // The maximum is inclusive and the minimum is inclusive
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  // Generate random row and column indices
+  const randomRowIndex = getRandomIntInclusive(1, rows - 2);
+  const randomColIndex = getRandomIntInclusive(1, cols - 2);
+
+  console.log(randomRowIndex);
+  console.log(randomColIndex);
+
   // chose a starting cell
-  const startCell = maze[15][15];
+  const startCell = maze[randomRowIndex][randomColIndex];
   startCell.cellType = CellType.Normal;
   startCell.cellStyle = CellStyles.Normal;
 
