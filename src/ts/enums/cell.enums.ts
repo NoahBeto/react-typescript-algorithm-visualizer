@@ -1,5 +1,5 @@
 // The different types of Cells
-export enum CellType {
+export enum ECellType {
   Normal = "cell-normal",
   Wall = "cell-wall",
   Start = "cell-start",

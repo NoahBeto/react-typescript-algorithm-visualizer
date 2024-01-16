@@ -1,6 +1,6 @@
 import { Cell } from "./cell";
-import { CellType } from "./enums/cell.enums";
-import { Graph } from "./types/GraphHelper.types";
+import { ECellType } from "./enums/cell.enums";
+import { TGraph } from "./types/GraphHelper.types";
 
 export class GraphHelper {
   static generateGraph(rows: number, cols: number): Cell[][] {
@@ -15,7 +15,7 @@ export class GraphHelper {
         row.push({
           posRow: i,
           posCol: j,
-          cellType: CellType.Normal,
+          cellType: ECellType.Normal,
         });
       }
       res.push(row);
@@ -35,7 +35,7 @@ export class GraphHelper {
         row.push({
           posRow: i,
           posCol: j,
-          cellType: CellType.Wall,
+          cellType: ECellType.Wall,
         });
       }
       res.push(row);
@@ -43,7 +43,7 @@ export class GraphHelper {
     return res;
   }
 
-  static getCell(graph: Graph, row: number, col: number): Cell {
+  static getCell(graph: TGraph, row: number, col: number): Cell {
     if (
       !(
         graph &&
@@ -59,31 +59,31 @@ export class GraphHelper {
     return graph.graph[row][col];
   }
 
-  static getNeighbors(graph: Graph, cell: Cell): Cell[] {
+  static getNeighbors(graph: TGraph, cell: Cell): Cell[] {
     const neighbors: Cell[] = [];
 
     // Example: Check top, bottom, left, and right neighbors
     if (
       cell.posRow > 0 &&
-      graph.graph[cell.posRow - 1][cell.posCol].cellType !== CellType.Wall
+      graph.graph[cell.posRow - 1][cell.posCol].cellType !== ECellType.Wall
     ) {
       neighbors.push(GraphHelper.getCell(graph, cell.posRow - 1, cell.posCol));
     }
     if (
       cell.posRow < graph.graph.length - 1 &&
-      graph.graph[cell.posRow + 1][cell.posCol].cellType !== CellType.Wall
+      graph.graph[cell.posRow + 1][cell.posCol].cellType !== ECellType.Wall
     ) {
       neighbors.push(GraphHelper.getCell(graph, cell.posRow + 1, cell.posCol));
     }
     if (
       cell.posCol > 0 &&
-      graph.graph[cell.posRow][cell.posCol - 1].cellType !== CellType.Wall
+      graph.graph[cell.posRow][cell.posCol - 1].cellType !== ECellType.Wall
     ) {
       neighbors.push(GraphHelper.getCell(graph, cell.posRow, cell.posCol - 1));
     }
     if (
       cell.posCol < graph.graph[cell.posRow].length - 1 &&
-      graph.graph[cell.posRow][cell.posCol + 1].cellType !== CellType.Wall
+      graph.graph[cell.posRow][cell.posCol + 1].cellType !== ECellType.Wall
     ) {
       neighbors.push(GraphHelper.getCell(graph, cell.posRow, cell.posCol + 1));
     }

@@ -1,4 +1,4 @@
-import { CellType } from "../ts/enums/cell.enums";
+import { ECellType } from "../ts/enums/cell.enums";
 import "./CellNode.css";
 
 export const CellNode = ({
@@ -8,10 +8,10 @@ export const CellNode = ({
   onMouseDown,
   _onMouseEnter,
 }: {
-  cellType: CellType;
+  cellType: ECellType;
   row: number;
   col: number;
-  onMouseDown: (row: number, col: number, style?: CellType) => void;
+  onMouseDown: (row: number, col: number, style?: ECellType) => void;
   _onMouseEnter: (row: number, col: number) => void;
 }) => {
   const styles = `cell ${cellType}`;

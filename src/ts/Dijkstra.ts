@@ -1,11 +1,11 @@
 import { GraphHelper } from "./GraphHelper";
-import { Graph } from "./types/GraphHelper.types";
+import { TGraph } from "./types/GraphHelper.types";
 import { PriorityQueue } from "./PriorityQueue";
 import { Cell } from "./cell";
-import { DijkstraState } from "./interfaces/Dijkstra.interfaces";
+import { IDijkstraState } from "./interfaces/Dijkstra.interfaces";
 
 export const dijkstra = (
-  graph: Graph
+  graph: TGraph
 ): {
   distances: { [key: string]: number };
   visited: Cell[];
@@ -59,8 +59,8 @@ export const dijkstra = (
 };
 
 export const dijkstraBackTrack = (
-  graph: Graph,
-  dijkstraState: DijkstraState
+  graph: TGraph,
+  dijkstraState: IDijkstraState
 ): Cell[] => {
   if (graph.startCell === undefined || graph.finishCell === undefined) {
     throw new Error("No start cell");

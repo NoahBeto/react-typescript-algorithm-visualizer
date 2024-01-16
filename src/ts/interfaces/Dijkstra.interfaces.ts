@@ -1,8 +1,8 @@
 import { Cell } from "../cell";
-import { CellType } from "../enums/cell.enums";
+import { ECellType } from "../enums/cell.enums";
 
-export interface DijkstraState {
-  selectedCellTypeToPlace: CellType;
+export interface IDijkstraState {
+  selectedCellTypeToPlace: ECellType;
   distances: { [key: string]: number } | undefined;
   path: Cell[] | undefined;
   visited: Cell[] | undefined;

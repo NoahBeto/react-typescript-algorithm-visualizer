@@ -1,5 +1,5 @@
 import { Cell } from "./cell";
-import { CellType } from "./enums/cell.enums";
+import { ECellType } from "./enums/cell.enums";
 
 export const generateMaze = (
   rows: number,
@@ -11,7 +11,7 @@ export const generateMaze = (
   for (let i = 0; i < rows; i++) {
     const row: Cell[] = [];
     for (let j = 0; j < cols; j++) {
-      row.push(new Cell(i, j, CellType.Wall));
+      row.push(new Cell(i, j, ECellType.Wall));
     }
     maze.push(row);
   }
@@ -27,7 +27,7 @@ export const generateMaze = (
 
   // chose a starting cell
   const startCell = maze[randomRowIndex][randomColIndex];
-  startCell.cellType = CellType.Normal;
+  startCell.cellType = ECellType.Normal;
 
   // recursive backtracking
   const steps: Cell[] = [];
@@ -49,13 +49,13 @@ const recursiveBacktrack = (
   for (const neighbor of neighbors) {
     const { posRow, posCol } = neighbor;
 
-    if (maze[posRow][posCol].cellType === CellType.Wall) {
-      maze[posRow][posCol].cellType = CellType.Normal;
+    if (maze[posRow][posCol].cellType === ECellType.Wall) {
+      maze[posRow][posCol].cellType = ECellType.Normal;
 
       // Carve a path between the current cell and the neighbor
       maze[(posRow + currentCell.posRow) / 2][
         (posCol + currentCell.posCol) / 2
-      ].cellType = CellType.Normal;
+      ].cellType = ECellType.Normal;
 
       steps.push(currentCell);
       steps.push(
@@ -114,6 +114,6 @@ const isValidPathCandidate = (maze: Cell[][], cell: Cell): boolean => {
     cell.posRow < maze.length &&
     cell.posCol >= 0 &&
     cell.posCol < maze[0].length &&
-    maze[cell.posRow][cell.posCol].cellType === CellType.Wall
+    maze[cell.posRow][cell.posCol].cellType === ECellType.Wall
   );
 };

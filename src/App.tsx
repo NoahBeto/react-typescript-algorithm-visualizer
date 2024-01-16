@@ -1,23 +1,23 @@
 import { useReducer, useEffect, useState } from "react";
 import { Cell } from "./ts/cell";
-import { CellType } from "./ts/enums/cell.enums";
+import { ECellType } from "./ts/enums/cell.enums";
 import { GraphHelper } from "./ts/GraphHelper";
-import { GraphAction } from "./ts/types/GraphHelper.types";
-import { Graph } from "./ts/types/GraphHelper.types";
-import { GraphActions } from "./ts/enums/GraphHelper.enums";
-import { GraphAlgorithms } from "./ts/enums/GraphHelper.enums";
-import { UpdateGraphPayload } from "./ts/interfaces/GraphHelper.interfaces";
-import { SetGraphPayload } from "./ts/interfaces/GraphHelper.interfaces";
+import { TGraphAction } from "./ts/types/GraphHelper.types";
+import { TGraph } from "./ts/types/GraphHelper.types";
+import { EGraphActions } from "./ts/enums/GraphHelper.enums";
+import { EGraphAlgorithms } from "./ts/enums/GraphHelper.enums";
+import { IUpdateGraphPayload } from "./ts/interfaces/GraphHelper.interfaces";
+import { ISetGraphPayload } from "./ts/interfaces/GraphHelper.interfaces";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
 import { AlertMessage } from "./components/AlertMessage";
 import { dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
-import { DijkstraState } from "./ts/DijkstraState";
+import { IDijkstraState } from "./ts/interfaces/Dijkstra.interfaces";
 import { generateMaze } from "./ts/RecursiveBacktracking";
 
 import shuffleIcon from "./assets/icons/shuffleSolid.svg";
 import OverlayDisable from "./components/OverlayDisable";
-import { TraceAnimationSpeed } from "./ts/enums/animation.enums";
+import { ETraceAnimationSpeed } from "./ts/enums/animation.enums";
 
 // ---------------------------------------------------------
 // DO NOT CHANGE!!!
@@ -33,15 +33,15 @@ const COLS = 41;
 // - action: The action object containing information about the update.
 // Return Value:
 // - A new state representing the updated grid after applying the action.
-const graphReducer = (state: Graph, action: GraphAction): Graph => {
+const graphReducer = (state: TGraph, action: TGraphAction): TGraph => {
   switch (action.type) {
-    case GraphActions.SetGraph:
+    case EGraphActions.SetGraph:
       return {
         ...state,
         graph: action.payload.graph,
       };
 
-    case GraphActions.UpdateCell:
+    case EGraphActions.UpdateCell:
       const updatedGraph = state.graph.map((row, rowIndex) =>
         rowIndex === action.payload.row
           ? row.map((cell, colIndex) =>
@@ -60,7 +60,7 @@ const graphReducer = (state: Graph, action: GraphAction): Graph => {
         graph: updatedGraph,
       };
 
-    case GraphActions.InitializeGraph:
+    case EGraphActions.InitializeGraph:
       return {
         ...state,
         graph: GraphHelper.generateGraph(
@@ -78,14 +78,14 @@ const graphReducer = (state: Graph, action: GraphAction): Graph => {
   }
 };
 
-let dijkstraState: DijkstraState = {
-  selectedCellTypeToPlace: CellType.Start,
+let dijkstraState: IDijkstraState = {
+  selectedCellTypeToPlace: ECellType.Start,
   distances: undefined,
   path: undefined,
   visited: undefined,
 };
 
-const initialGraph: Graph = {
+const initialGraph: TGraph = {
   startCell: undefined,
   finishCell: undefined,
   graph: [],
@@ -93,22 +93,21 @@ const initialGraph: Graph = {
 
 function App() {
   const [graph, dispatch] = useReducer(graphReducer, initialGraph);
-  const [traceSearchSpeed, setTraceSearchSpeed] = useState<TraceAnimationSpeed>(
-    TraceAnimationSpeed.SPEED_TWO
-  );
-  const [tracePathSpeed, setTracePathSpeed] = useState<TraceAnimationSpeed>(
-    TraceAnimationSpeed.SPEED_TWO
+  const [traceSearchSpeed, setTraceSearchSpeed] =
+    useState<ETraceAnimationSpeed>(ETraceAnimationSpeed.SPEED_TWO);
+  const [tracePathSpeed, setTracePathSpeed] = useState<ETraceAnimationSpeed>(
+    ETraceAnimationSpeed.SPEED_TWO
   );
   const [traceMazeGenerationSpeed, setTraceMazeGenerationSpeed] =
-    useState<TraceAnimationSpeed>(TraceAnimationSpeed.SPEED_THREE);
+    useState<ETraceAnimationSpeed>(ETraceAnimationSpeed.SPEED_THREE);
 
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
   const [selectedCellTypeToPlace, setSelectedCellTypeToPlace] =
-    useState<CellType>(CellType.Normal);
+    useState<ECellType>(ECellType.Normal);
 
   const [currentAlgorithm, setCurrentAlgorithm] =
-    useState<GraphAlgorithms | null>(null);
+    useState<EGraphAlgorithms | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>(
@@ -122,7 +121,7 @@ function App() {
     let rows = ROWS;
     let columns = COLS;
     dispatch({
-      type: GraphActions.InitializeGraph,
+      type: EGraphActions.InitializeGraph,
       payload: { rows, columns },
     });
   };
@@ -130,20 +129,20 @@ function App() {
   const setAllCellsToNormalExceptWallsStartFinish = () => {
     const updatedGraphWithoutWalls: Cell[][] = graph.graph.map((row) =>
       row.map((cell) =>
-        cell.cellType === CellType.Wall ||
-        cell.cellType === CellType.Start ||
-        cell.cellType === CellType.Finish
+        cell.cellType === ECellType.Wall ||
+        cell.cellType === ECellType.Start ||
+        cell.cellType === ECellType.Finish
           ? cell
-          : { ...cell, cellType: CellType.Normal }
+          : { ...cell, cellType: ECellType.Normal }
       )
     );
 
-    let data: SetGraphPayload = {
+    let data: ISetGraphPayload = {
       graph: updatedGraphWithoutWalls,
     };
 
     dispatch({
-      type: GraphActions.SetGraph,
+      type: EGraphActions.SetGraph,
       payload: data,
     });
 
@@ -151,13 +150,13 @@ function App() {
     updateCell(
       graph.startCell!.posRow!,
       graph.startCell!.posCol!,
-      CellType.Start
+      ECellType.Start
     );
 
     updateCell(
       graph.finishCell!.posRow!,
       graph.finishCell!.posCol!,
-      CellType.Finish
+      ECellType.Finish
     );
   };
 
@@ -170,7 +169,7 @@ function App() {
   const handleResetGraphButton = (): void => {
     initializeGraph();
     dijkstraState = {
-      selectedCellTypeToPlace: CellType.Start,
+      selectedCellTypeToPlace: ECellType.Start,
       distances: undefined,
       path: undefined,
       visited: undefined,
@@ -178,22 +177,22 @@ function App() {
   };
 
   // Handle clicking the desired path finding algorithm
-  const handleSelectAlgorithmBtn = (clicked: GraphAlgorithms): void => {
+  const handleSelectAlgorithmBtn = (clicked: EGraphAlgorithms): void => {
     setCurrentAlgorithm(clicked);
   };
 
   // Handle clicking the desired speed for tracing the search
-  const handleTraceSearchSpeedBtns = (speed: TraceAnimationSpeed) => {
+  const handleTraceSearchSpeedBtns = (speed: ETraceAnimationSpeed) => {
     setTraceSearchSpeed(speed);
   };
 
   // Handle clicking the desired speed for tracing the path
-  const handleTracePathSpeedBtns = (speed: TraceAnimationSpeed) => {
+  const handleTracePathSpeedBtns = (speed: ETraceAnimationSpeed) => {
     setTracePathSpeed(speed);
   };
 
   // Handle clicking the desired speed for tracing the path
-  const handleTraceMazeGenerationSpeedBtns = (speed: TraceAnimationSpeed) => {
+  const handleTraceMazeGenerationSpeedBtns = (speed: ETraceAnimationSpeed) => {
     setTraceMazeGenerationSpeed(speed);
   };
 
@@ -201,7 +200,7 @@ function App() {
   // Parameters:
   // - cellClicked: The CellStyle to be set to the current cell being placed
   // e.g. CellStyles.Start, CellStyles.Finish.
-  const handleCellTypeToPlace = (cellType: CellType): void => {
+  const handleCellTypeToPlace = (cellType: ECellType): void => {
     setSelectedCellTypeToPlace(cellType);
   };
 
@@ -209,41 +208,73 @@ function App() {
   // Parameters:
   // - row: The row index of the cell to be updated.
   // - col: The column index of the cell to be updated.
-  // - style: The new style to be assigned to the cell.
+  // - type: The new type to be assigned to the cell.
   // Return Value: None (dispatches an action to update the grid state)
-  const updateCell = (row: number, col: number, cellType: CellType): void => {
+  const updateCell = (row: number, col: number, cellType: ECellType): void => {
     dispatch({
-      type: GraphActions.UpdateCell,
+      type: EGraphActions.UpdateCell,
       payload: { row, col, cellType },
     });
   };
 
-  const animateDijkstra = async () => {
-    if (!dijkstraState.visited || !dijkstraState.path) return;
-
-    setOverlayDisable(true);
-    // animate dijkstra searching for finish cell
-    for (const cell of dijkstraState.visited) {
-      updateCell(cell.posRow, cell.posCol, CellType.SubtleHighlight);
-      await new Promise((resolve) => setTimeout(resolve, traceSearchSpeed));
-      if (
-        cell.posRow === graph.finishCell?.posRow &&
-        cell.posCol === graph.finishCell?.posCol
-      )
-        break;
+  // Handles updating the clicked cell based on the current desired
+  // cell to place e.g. Start, Finish, Wall.
+  const handleCellClick = (
+    row: number,
+    col: number,
+    cellType?: ECellType
+  ): void => {
+    if (
+      GraphHelper.getCell(graph, row, col).cellType === ECellType.Start ||
+      GraphHelper.getCell(graph, row, col).cellType === ECellType.Finish
+    ) {
+      return;
     }
+    // set the clicked cell to the desired type
+    cellType = selectedCellTypeToPlace;
+    dispatch({
+      type: EGraphActions.UpdateCell,
+      payload: { row, col, cellType },
+    });
 
-    // animate shortest path from start to finish cell
-    for (const cell of dijkstraState.path) {
-      updateCell(cell.posRow, cell.posCol, CellType.Highlight);
-      await new Promise((resolve) => setTimeout(resolve, tracePathSpeed));
-      if (
-        cell.posRow === graph.finishCell?.posRow &&
-        cell.posCol === graph.finishCell?.posCol
-      )
-        break;
+    // if the user is currently placing a start cell, then set the
+    // previous start cell to normal, and update the clicked cell
+    // to a start cell
+    if (cellType === ECellType.Start) {
+      // update previous start cell
+      if (graph.startCell !== undefined) {
+        let data: IUpdateGraphPayload = {
+          row: graph.startCell.posRow,
+          col: graph.startCell.posCol,
+          cellType: ECellType.Normal,
+        };
+        dispatch({
+          type: EGraphActions.UpdateCell,
+          payload: data,
+        });
+      }
+      // set new start cell
+      graph.startCell = GraphHelper.getCell(graph, row, col);
     }
-    setOverlayDisable(false);
+    // if the user is currently placing a finsh cell, then set the
+    // previous finish cell to normal, and update the clicked cell
+    // to a finish cell
+    else if (cellType === ECellType.Finish) {
+      // update previous finish cell
+      if (graph.finishCell !== undefined) {
+        let data: IUpdateGraphPayload = {
+          row: graph.finishCell.posRow,
+          col: graph.finishCell.posCol,
+          cellType: ECellType.Normal,
+        };
+        dispatch({
+          type: EGraphActions.UpdateCell,
+          payload: data,
+        });
+      }
+      // set finish start cell
+      graph.finishCell = GraphHelper.getCell(graph, row, col);
+    }
   };
 
   // Function to handle user pressing the go button. If a start and
@@ -263,7 +294,7 @@ function App() {
     // search trace.
     setAllCellsToNormalExceptWallsStartFinish();
     switch (currentAlgorithm) {
-      case GraphAlgorithms.Dijkstra:
+      case EGraphAlgorithms.Dijkstra:
         let res: {
           distances: { [key: string]: number };
           visited: Cell[];
@@ -288,64 +319,32 @@ function App() {
     }
   };
 
-  // Handles updating the clicked cell based on the current desired
-  // cell to place e.g. Start, Finish, etc.
-  const handleCellClick = (
-    row: number,
-    col: number,
-    cellType?: CellType
-  ): void => {
-    if (
-      GraphHelper.getCell(graph, row, col).cellType === CellType.Start ||
-      GraphHelper.getCell(graph, row, col).cellType === CellType.Finish
-    ) {
-      return;
-    }
-    // set the clicked cell to the desired type
-    cellType = selectedCellTypeToPlace;
-    dispatch({
-      type: GraphActions.UpdateCell,
-      payload: { row, col, cellType },
-    });
+  const animateDijkstra = async () => {
+    if (!dijkstraState.visited || !dijkstraState.path) return;
 
-    // if the user is currently placing a start cell, then set the
-    // previous start cell to normal, and update the clicked cell
-    // to a start cell
-    if (cellType === CellType.Start) {
-      // update previous start cell
-      if (graph.startCell !== undefined) {
-        let data: UpdateGraphPayload = {
-          row: graph.startCell.posRow,
-          col: graph.startCell.posCol,
-          cellType: CellType.Normal,
-        };
-        dispatch({
-          type: GraphActions.UpdateCell,
-          payload: data,
-        });
-      }
-      // set new start cell
-      graph.startCell = GraphHelper.getCell(graph, row, col);
+    setOverlayDisable(true);
+    // animate dijkstra searching for finish cell
+    for (const cell of dijkstraState.visited) {
+      updateCell(cell.posRow, cell.posCol, ECellType.SubtleHighlight);
+      await new Promise((resolve) => setTimeout(resolve, traceSearchSpeed));
+      if (
+        cell.posRow === graph.finishCell?.posRow &&
+        cell.posCol === graph.finishCell?.posCol
+      )
+        break;
     }
-    // if the user is currently placing a finsh cell, then set the
-    // previous finish cell to normal, and update the clicked cell
-    // to a finish cell
-    else if (cellType === CellType.Finish) {
-      // update previous finish cell
-      if (graph.finishCell !== undefined) {
-        let data: UpdateGraphPayload = {
-          row: graph.finishCell.posRow,
-          col: graph.finishCell.posCol,
-          cellType: CellType.Normal,
-        };
-        dispatch({
-          type: GraphActions.UpdateCell,
-          payload: data,
-        });
-      }
-      // set finish start cell
-      graph.finishCell = GraphHelper.getCell(graph, row, col);
+
+    // animate shortest path from start to finish cell
+    for (const cell of dijkstraState.path) {
+      updateCell(cell.posRow, cell.posCol, ECellType.Highlight);
+      await new Promise((resolve) => setTimeout(resolve, tracePathSpeed));
+      if (
+        cell.posRow === graph.finishCell?.posRow &&
+        cell.posCol === graph.finishCell?.posCol
+      )
+        break;
     }
+    setOverlayDisable(false);
   };
 
   const handleRecursiveBacktrackBtn = async () => {
@@ -355,27 +354,27 @@ function App() {
     // set graph to all walls and reset start and finish cell
     graph.startCell = undefined;
     graph.finishCell = undefined;
-    let _data: SetGraphPayload = {
+    let _data: ISetGraphPayload = {
       graph: GraphHelper.generateAllWallGraph(ROWS, COLS),
     };
     dispatch({
-      type: GraphActions.SetGraph,
+      type: EGraphActions.SetGraph,
       payload: _data,
     });
 
     // animate recurrsive backtracking
     for (const cell of res.steps) {
-      updateCell(cell.posRow, cell.posCol, CellType.Normal);
+      updateCell(cell.posRow, cell.posCol, ECellType.Normal);
       await new Promise((resolve) =>
         setTimeout(resolve, traceMazeGenerationSpeed)
       );
     }
 
-    let data: SetGraphPayload = {
+    let data: ISetGraphPayload = {
       graph: res.maze,
     };
     dispatch({
-      type: GraphActions.SetGraph,
+      type: EGraphActions.SetGraph,
       payload: data,
     });
     setOverlayDisable(false);
@@ -431,7 +430,7 @@ function App() {
               <div
                 className="dropdown-item"
                 onClick={() =>
-                  handleSelectAlgorithmBtn(GraphAlgorithms.Dijkstra)
+                  handleSelectAlgorithmBtn(EGraphAlgorithms.Dijkstra)
                 }
               >
                 Dijkstra
@@ -450,10 +449,10 @@ function App() {
             <ul className="selector selector-normal">
               <li
                 onClick={() =>
-                  handleTraceSearchSpeedBtns(TraceAnimationSpeed.SPEED_ONE)
+                  handleTraceSearchSpeedBtns(ETraceAnimationSpeed.SPEED_ONE)
                 }
                 className={
-                  traceSearchSpeed === TraceAnimationSpeed.SPEED_ONE
+                  traceSearchSpeed === ETraceAnimationSpeed.SPEED_ONE
                     ? "selector-highlight"
                     : "selector-normal"
                 }
@@ -462,10 +461,10 @@ function App() {
               </li>
               <li
                 onClick={() =>
-                  handleTraceSearchSpeedBtns(TraceAnimationSpeed.SPEED_TWO)
+                  handleTraceSearchSpeedBtns(ETraceAnimationSpeed.SPEED_TWO)
                 }
                 className={
-                  traceSearchSpeed === TraceAnimationSpeed.SPEED_TWO
+                  traceSearchSpeed === ETraceAnimationSpeed.SPEED_TWO
                     ? "selector-highlight"
                     : "selector-normal"
                 }
@@ -474,10 +473,10 @@ function App() {
               </li>
               <li
                 onClick={() =>
-                  handleTraceSearchSpeedBtns(TraceAnimationSpeed.SPEED_THREE)
+                  handleTraceSearchSpeedBtns(ETraceAnimationSpeed.SPEED_THREE)
                 }
                 className={
-                  traceSearchSpeed === TraceAnimationSpeed.SPEED_THREE
+                  traceSearchSpeed === ETraceAnimationSpeed.SPEED_THREE
                     ? "selector-highlight"
                     : "selector-normal"
                 }
@@ -492,10 +491,10 @@ function App() {
             <ul className="selector selector-normal">
               <li
                 onClick={() =>
-                  handleTracePathSpeedBtns(TraceAnimationSpeed.SPEED_ONE)
+                  handleTracePathSpeedBtns(ETraceAnimationSpeed.SPEED_ONE)
                 }
                 className={
-                  tracePathSpeed === TraceAnimationSpeed.SPEED_ONE
+                  tracePathSpeed === ETraceAnimationSpeed.SPEED_ONE
                     ? "selector-highlight"
                     : "selector-normal"
                 }
@@ -504,10 +503,10 @@ function App() {
               </li>
               <li
                 onClick={() =>
-                  handleTracePathSpeedBtns(TraceAnimationSpeed.SPEED_TWO)
+                  handleTracePathSpeedBtns(ETraceAnimationSpeed.SPEED_TWO)
                 }
                 className={
-                  tracePathSpeed === TraceAnimationSpeed.SPEED_TWO
+                  tracePathSpeed === ETraceAnimationSpeed.SPEED_TWO
                     ? "selector-highlight"
                     : "selector-normal"
                 }
@@ -516,10 +515,10 @@ function App() {
               </li>
               <li
                 onClick={() =>
-                  handleTracePathSpeedBtns(TraceAnimationSpeed.SPEED_THREE)
+                  handleTracePathSpeedBtns(ETraceAnimationSpeed.SPEED_THREE)
                 }
                 className={
-                  tracePathSpeed === TraceAnimationSpeed.SPEED_THREE
+                  tracePathSpeed === ETraceAnimationSpeed.SPEED_THREE
                     ? "selector-highlight"
                     : "selector-normal"
                 }
@@ -532,44 +531,44 @@ function App() {
           <div className="start-end-selector-container">
             <div
               className={`selector  ${
-                selectedCellTypeToPlace === CellType.Start
+                selectedCellTypeToPlace === ECellType.Start
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() => handleCellTypeToPlace(CellType.Start)}
+              onClick={() => handleCellTypeToPlace(ECellType.Start)}
             >
               <div className="cell-start selector-icon"></div>
               <div>Set Start Cell</div>
             </div>
             <div
               className={`selector  ${
-                selectedCellTypeToPlace === CellType.Finish
+                selectedCellTypeToPlace === ECellType.Finish
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() => handleCellTypeToPlace(CellType.Finish)}
+              onClick={() => handleCellTypeToPlace(ECellType.Finish)}
             >
               <div className="cell-finish selector-icon"></div>
               <div>Set Finish Cell</div>
             </div>
             <div
               className={`selector  ${
-                selectedCellTypeToPlace === CellType.Wall
+                selectedCellTypeToPlace === ECellType.Wall
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() => handleCellTypeToPlace(CellType.Wall)}
+              onClick={() => handleCellTypeToPlace(ECellType.Wall)}
             >
               <div className="cell-wall selector-icon "></div>
               <div>Set Wall Cell</div>
             </div>
             <div
               className={`selector  ${
-                selectedCellTypeToPlace === CellType.Normal
+                selectedCellTypeToPlace === ECellType.Normal
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() => handleCellTypeToPlace(CellType.Normal)}
+              onClick={() => handleCellTypeToPlace(ECellType.Normal)}
             >
               <div className="cell-normal selector-icon "></div>
               <div>Set Normal Cell</div>
@@ -596,11 +595,11 @@ function App() {
               <li
                 onClick={() =>
                   handleTraceMazeGenerationSpeedBtns(
-                    TraceAnimationSpeed.SPEED_ONE
+                    ETraceAnimationSpeed.SPEED_ONE
                   )
                 }
                 className={
-                  traceMazeGenerationSpeed === TraceAnimationSpeed.SPEED_ONE
+                  traceMazeGenerationSpeed === ETraceAnimationSpeed.SPEED_ONE
                     ? "selector-highlight"
                     : "selector-normal"
                 }
@@ -610,11 +609,11 @@ function App() {
               <li
                 onClick={() =>
                   handleTraceMazeGenerationSpeedBtns(
-                    TraceAnimationSpeed.SPEED_TWO
+                    ETraceAnimationSpeed.SPEED_TWO
                   )
                 }
                 className={
-                  traceMazeGenerationSpeed === TraceAnimationSpeed.SPEED_TWO
+                  traceMazeGenerationSpeed === ETraceAnimationSpeed.SPEED_TWO
                     ? "selector-highlight"
                     : "selector-normal"
                 }
@@ -624,11 +623,11 @@ function App() {
               <li
                 onClick={() =>
                   handleTraceMazeGenerationSpeedBtns(
-                    TraceAnimationSpeed.SPEED_THREE
+                    ETraceAnimationSpeed.SPEED_THREE
                   )
                 }
                 className={
-                  traceMazeGenerationSpeed === TraceAnimationSpeed.SPEED_THREE
+                  traceMazeGenerationSpeed === ETraceAnimationSpeed.SPEED_THREE
                     ? "selector-highlight"
                     : "selector-normal"
                 }

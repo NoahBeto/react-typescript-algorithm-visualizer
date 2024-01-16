@@ -1,26 +1,26 @@
 import { Cell } from "../cell";
-import { GraphActions } from "../enums/GraphHelper.enums";
+import { EGraphActions } from "../enums/GraphHelper.enums";
 import {
-  SetGraphPayload,
-  UpdateGraphPayload,
-  InitializeGraphPayload,
+  ISetGraphPayload,
+  IUpdateGraphPayload,
+  IInitializeGraphPayload,
 } from "../interfaces/GraphHelper.interfaces";
 
-export type Graph = {
+export type TGraph = {
   startCell: Cell | undefined;
   finishCell: Cell | undefined;
   graph: Cell[][];
 };
-export type GraphAction =
+export type TGraphAction =
   | {
-      type: GraphActions.SetGraph;
-      payload: SetGraphPayload;
+      type: EGraphActions.SetGraph;
+      payload: ISetGraphPayload;
     }
   | {
-      type: GraphActions.UpdateCell;
-      payload: UpdateGraphPayload;
+      type: EGraphActions.UpdateCell;
+      payload: IUpdateGraphPayload;
     }
   | {
-      type: GraphActions.InitializeGraph;
-      payload: InitializeGraphPayload;
+      type: EGraphActions.InitializeGraph;
+      payload: IInitializeGraphPayload;
     };

@@ -1,15 +1,15 @@
 import { Cell } from "../cell";
-import { CellType } from "../enums/cell.enums";
+import { ECellType } from "../enums/cell.enums";
 
-export interface SetGraphPayload {
+export interface ISetGraphPayload {
   graph: Cell[][];
 }
-export interface UpdateGraphPayload {
+export interface IUpdateGraphPayload {
   row: number;
   col: number;
-  cellType: CellType;
+  cellType: ECellType;
 }
-export interface InitializeGraphPayload {
+export interface IInitializeGraphPayload {
   rows: number;
   columns: number;
 }
