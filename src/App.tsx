@@ -6,7 +6,7 @@ import { TGraphAction } from "./ts/types/GraphHelper.types";
 import { TGraph } from "./ts/types/GraphHelper.types";
 import { EGraphActions } from "./ts/enums/GraphHelper.enums";
 import { EGraphAlgorithms } from "./ts/enums/GraphHelper.enums";
-import { TUpdateGraphPayload } from "./ts/types/GraphHelper.types";
+import { TUpdateCellPayload } from "./ts/types/GraphHelper.types";
 import { TSetGraphPayload } from "./ts/types/GraphHelper.types";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
@@ -241,7 +241,7 @@ function App() {
     if (cellType === ECellType.Start) {
       // update previous start cell
       if (graph.startCell !== undefined) {
-        let data: TUpdateGraphPayload = {
+        let data: TUpdateCellPayload = {
           row: graph.startCell.posRow,
           col: graph.startCell.posCol,
           cellType: ECellType.Normal,
@@ -260,7 +260,7 @@ function App() {
     else if (cellType === ECellType.Finish) {
       // update previous finish cell
       if (graph.finishCell !== undefined) {
-        let data: TUpdateGraphPayload = {
+        let data: TUpdateCellPayload = {
           row: graph.finishCell.posRow,
           col: graph.finishCell.posCol,
           cellType: ECellType.Normal,

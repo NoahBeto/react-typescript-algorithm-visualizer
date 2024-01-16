@@ -15,7 +15,7 @@ export type TGraphAction =
     }
   | {
       type: EGraphActions.UpdateCell;
-      payload: TUpdateGraphPayload;
+      payload: TUpdateCellPayload;
     }
   | {
       type: EGraphActions.InitializeGraph;
@@ -26,7 +26,7 @@ export type TSetGraphPayload = {
   graph: Cell[][];
 };
 
-export type TUpdateGraphPayload = {
+export type TUpdateCellPayload = {
   row: number;
   col: number;
   cellType: ECellType;
