@@ -6,13 +6,13 @@ import { TGraphAction } from "./ts/types/GraphHelper.types";
 import { TGraph } from "./ts/types/GraphHelper.types";
 import { EGraphActions } from "./ts/enums/GraphHelper.enums";
 import { EGraphAlgorithms } from "./ts/enums/GraphHelper.enums";
-import { IUpdateGraphPayload } from "./ts/interfaces/GraphHelper.interfaces";
-import { ISetGraphPayload } from "./ts/interfaces/GraphHelper.interfaces";
+import { TUpdateGraphPayload } from "./ts/types/GraphHelper.types";
+import { TSetGraphPayload } from "./ts/types/GraphHelper.types";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
 import { AlertMessage } from "./components/AlertMessage";
 import { dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
-import { IDijkstraState } from "./ts/interfaces/Dijkstra.interfaces";
+import { TDijkstraState } from "./ts/types/Dijkstra.types";
 import { generateMaze } from "./ts/RecursiveBacktracking";
 
 import shuffleIcon from "./assets/icons/shuffleSolid.svg";
@@ -76,7 +76,7 @@ const graphReducer = (state: TGraph, action: TGraphAction): TGraph => {
   }
 };
 
-let dijkstraState: IDijkstraState = {
+let dijkstraState: TDijkstraState = {
   selectedCellTypeToPlace: ECellType.Start,
   distances: undefined,
   path: undefined,
@@ -135,7 +135,7 @@ function App() {
       )
     );
 
-    let data: ISetGraphPayload = {
+    let data: TSetGraphPayload = {
       graph: updatedGraphWithoutWalls,
     };
 
@@ -241,7 +241,7 @@ function App() {
     if (cellType === ECellType.Start) {
       // update previous start cell
       if (graph.startCell !== undefined) {
-        let data: IUpdateGraphPayload = {
+        let data: TUpdateGraphPayload = {
           row: graph.startCell.posRow,
           col: graph.startCell.posCol,
           cellType: ECellType.Normal,
@@ -260,7 +260,7 @@ function App() {
     else if (cellType === ECellType.Finish) {
       // update previous finish cell
       if (graph.finishCell !== undefined) {
-        let data: IUpdateGraphPayload = {
+        let data: TUpdateGraphPayload = {
           row: graph.finishCell.posRow,
           col: graph.finishCell.posCol,
           cellType: ECellType.Normal,
@@ -352,7 +352,7 @@ function App() {
     // set graph to all walls and reset start and finish cell
     graph.startCell = undefined;
     graph.finishCell = undefined;
-    let _data: ISetGraphPayload = {
+    let _data: TSetGraphPayload = {
       graph: GraphHelper.generateAllWallGraph(ROWS, COLS),
     };
     dispatch({
@@ -368,7 +368,7 @@ function App() {
       );
     }
 
-    let data: ISetGraphPayload = {
+    let data: TSetGraphPayload = {
       graph: res.maze,
     };
     dispatch({

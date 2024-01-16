@@ -2,7 +2,7 @@ import { GraphHelper } from "./GraphHelper";
 import { TGraph } from "./types/GraphHelper.types";
 import { PriorityQueue } from "./PriorityQueue";
 import { Cell } from "./cell";
-import { IDijkstraState } from "./interfaces/Dijkstra.interfaces";
+import { TDijkstraState } from "./types/Dijkstra.types";
 
 export const dijkstra = (
   graph: TGraph
@@ -60,7 +60,7 @@ export const dijkstra = (
 
 export const dijkstraBackTrack = (
   graph: TGraph,
-  dijkstraState: IDijkstraState
+  dijkstraState: TDijkstraState
 ): Cell[] => {
   if (graph.startCell === undefined || graph.finishCell === undefined) {
     throw new Error("No start cell");
