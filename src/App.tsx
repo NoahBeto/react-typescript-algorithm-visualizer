@@ -71,8 +71,6 @@ const graphReducer = (state: TGraph, action: TGraphAction): TGraph => {
         finishCell: undefined,
       };
 
-    // Handle other action types if needed
-
     default:
       return state;
   }
