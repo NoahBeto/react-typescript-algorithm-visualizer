@@ -1,11 +1,11 @@
-import { Cell } from "../cell";
+import { TCell } from "./Cell.types";
 import { EGraphActions } from "../enums/GraphHelper.enums";
 import { ECellType } from "../enums/cell.enums";
 
 export type TGraph = {
-  startCell: Cell | undefined;
-  finishCell: Cell | undefined;
-  graph: Cell[][];
+  startCell: TCell | undefined;
+  finishCell: TCell | undefined;
+  graph: TCell[][];
 };
 
 export type TGraphAction =
@@ -23,7 +23,7 @@ export type TGraphAction =
     };
 
 export type TSetGraphPayload = {
-  graph: Cell[][];
+  graph: TCell[][];
 };
 
 export type TUpdateCellPayload = {

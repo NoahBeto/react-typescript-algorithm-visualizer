@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useState } from "react";
-import { Cell } from "./ts/cell";
+import { TCell } from "./ts/types/Cell.types";
 import { ECellType } from "./ts/enums/cell.enums";
 import { GraphHelper } from "./ts/GraphHelper";
 import { TGraphAction } from "./ts/types/GraphHelper.types";
@@ -125,7 +125,7 @@ function App() {
   };
 
   const setAllCellsToNormalExceptWallsStartFinish = () => {
-    const updatedGraphWithoutWalls: Cell[][] = graph.graph.map((row) =>
+    const updatedGraphWithoutWalls: TCell[][] = graph.graph.map((row) =>
       row.map((cell) =>
         cell.cellType === ECellType.Wall ||
         cell.cellType === ECellType.Start ||
@@ -295,7 +295,7 @@ function App() {
       case EGraphAlgorithms.Dijkstra:
         let res: {
           distances: { [key: string]: number };
-          visited: Cell[];
+          visited: TCell[];
         };
         try {
           res = dijkstra(graph);

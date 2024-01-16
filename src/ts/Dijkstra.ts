@@ -1,22 +1,22 @@
 import { GraphHelper } from "./GraphHelper";
 import { TGraph } from "./types/GraphHelper.types";
 import { PriorityQueue } from "./PriorityQueue";
-import { Cell } from "./cell";
+import { TCell } from "./types/Cell.types";
 import { TDijkstraState } from "./types/Dijkstra.types";
 
 export const dijkstra = (
   graph: TGraph
 ): {
   distances: { [key: string]: number };
-  visited: Cell[];
+  visited: TCell[];
 } => {
   if (!graph.startCell || !graph.finishCell)
     throw new Error("No start cell or finish cell");
 
   const distances: { [key: string]: number } = {};
   const visited: { [key: string]: boolean } = {};
-  const visitedCells: Cell[] = [];
-  const priorityQueue = new PriorityQueue<Cell>();
+  const visitedCells: TCell[] = [];
+  const priorityQueue = new PriorityQueue<TCell>();
 
   // initialize all cells with distance infinity and visited false
   for (let row = 0; row < graph.graph.length; row++) {
@@ -33,7 +33,7 @@ export const dijkstra = (
   priorityQueue.enqueue(graph.startCell, 0);
 
   while (!priorityQueue.isEmpty()) {
-    const currentCell: Cell = priorityQueue.dequeue();
+    const currentCell: TCell = priorityQueue.dequeue();
 
     if (visited[`${currentCell.posRow}-${currentCell.posCol}`]) continue;
     visited[`${currentCell.posRow}-${currentCell.posCol}`] = true;
@@ -61,12 +61,12 @@ export const dijkstra = (
 export const dijkstraBackTrack = (
   graph: TGraph,
   dijkstraState: TDijkstraState
-): Cell[] => {
+): TCell[] => {
   if (graph.startCell === undefined || graph.finishCell === undefined) {
     throw new Error("No start cell");
   }
 
-  const path: Cell[] = [];
+  const path: TCell[] = [];
   let currentCell = graph.finishCell;
 
   while (

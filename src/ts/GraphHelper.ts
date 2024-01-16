@@ -1,16 +1,16 @@
-import { Cell } from "./cell";
+import { TCell } from "./types/Cell.types";
 import { ECellType } from "./enums/cell.enums";
 import { TGraph } from "./types/GraphHelper.types";
 
 export class GraphHelper {
-  static generateGraph(rows: number, cols: number): Cell[][] {
+  static generateGraph(rows: number, cols: number): TCell[][] {
     if (rows <= 0 || cols <= 0) {
       throw new Error("Rows and cols must be positive integers");
     }
-    let res: Cell[][] = [];
+    let res: TCell[][] = [];
 
     for (let i = 0; i < rows; i++) {
-      let row: Cell[] = [];
+      let row: TCell[] = [];
       for (let j = 0; j < cols; j++) {
         row.push({
           posRow: i,
@@ -23,14 +23,14 @@ export class GraphHelper {
     return res;
   }
 
-  static generateAllWallGraph(rows: number, cols: number): Cell[][] {
+  static generateAllWallGraph(rows: number, cols: number): TCell[][] {
     if (rows <= 0 || cols <= 0) {
       throw new Error("Rows and cols must be positive integers");
     }
-    let res: Cell[][] = [];
+    let res: TCell[][] = [];
 
     for (let i = 0; i < rows; i++) {
-      let row: Cell[] = [];
+      let row: TCell[] = [];
       for (let j = 0; j < cols; j++) {
         row.push({
           posRow: i,
@@ -43,7 +43,7 @@ export class GraphHelper {
     return res;
   }
 
-  static getCell(graph: TGraph, row: number, col: number): Cell {
+  static getCell(graph: TGraph, row: number, col: number): TCell {
     if (
       !(
         graph &&
@@ -59,8 +59,8 @@ export class GraphHelper {
     return graph.graph[row][col];
   }
 
-  static getNeighbors(graph: TGraph, cell: Cell): Cell[] {
-    const neighbors: Cell[] = [];
+  static getNeighbors(graph: TGraph, cell: TCell): TCell[] {
+    const neighbors: TCell[] = [];
 
     // Example: Check top, bottom, left, and right neighbors
     if (
@@ -93,8 +93,8 @@ export class GraphHelper {
 
   static getDistanceBetweenTwoCells(
     distances: { [key: string]: number },
-    start: Cell,
-    end: Cell
+    start: TCell,
+    end: TCell
   ) {
     const key1 = `${start.posRow}-${start.posCol}`;
     const key2 = `${end.posRow}-${end.posCol}`;

@@ -1,17 +1,21 @@
-import { Cell } from "./cell";
+import { TCell } from "./types/Cell.types";
 import { ECellType } from "./enums/cell.enums";
 
 export const generateMaze = (
   rows: number,
   cols: number
-): { maze: Cell[][]; steps: Cell[] } => {
-  const maze: Cell[][] = [];
+): { maze: TCell[][]; steps: TCell[] } => {
+  const maze: TCell[][] = [];
 
   // Initialize maze with walls
   for (let i = 0; i < rows; i++) {
-    const row: Cell[] = [];
+    const row: TCell[] = [];
     for (let j = 0; j < cols; j++) {
-      row.push(new Cell(i, j, ECellType.Wall));
+      row.push({
+        posRow: i,
+        posCol: j,
+        cellType: ECellType.Wall,
+      });
     }
     maze.push(row);
   }
@@ -30,16 +34,16 @@ export const generateMaze = (
   startCell.cellType = ECellType.Normal;
 
   // recursive backtracking
-  const steps: Cell[] = [];
+  const steps: TCell[] = [];
   recursiveBacktrack(maze, startCell, steps);
 
   return { maze, steps };
 };
 
 const recursiveBacktrack = (
-  maze: Cell[][],
-  currentCell: Cell,
-  steps: Cell[]
+  maze: TCell[][],
+  currentCell: TCell,
+  steps: TCell[]
 ) => {
   const neighbors = getNeighbors(maze, currentCell);
 
@@ -70,8 +74,8 @@ const recursiveBacktrack = (
   }
 };
 
-const getNeighbors = (maze: Cell[][], cell: Cell): Cell[] => {
-  const neighbors: Cell[] = [];
+const getNeighbors = (maze: TCell[][], cell: TCell): TCell[] => {
+  const neighbors: TCell[] = [];
 
   // Check top neighbor
   if (
@@ -108,7 +112,7 @@ const getNeighbors = (maze: Cell[][], cell: Cell): Cell[] => {
   return neighbors;
 };
 
-const isValidPathCandidate = (maze: Cell[][], cell: Cell): boolean => {
+const isValidPathCandidate = (maze: TCell[][], cell: TCell): boolean => {
   return (
     cell.posRow >= 0 &&
     cell.posRow < maze.length &&
