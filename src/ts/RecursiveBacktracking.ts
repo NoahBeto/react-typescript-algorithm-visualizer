@@ -1,4 +1,5 @@
-import { Cell, CellType } from "./cell";
+import { Cell } from "./cell";
+import { CellType } from "./enums/cell.enums";
 
 export const generateMaze = (
   rows: number,

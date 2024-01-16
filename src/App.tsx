@@ -1,29 +1,29 @@
 import { useReducer, useEffect, useState } from "react";
-import { Cell, CellType } from "./ts/cell";
-import {
-  GraphAction,
-  GraphActions,
-  GraphAlgorithms,
-  GraphHelper,
-  Graph,
-  UpdateGraphPayload,
-  SetGraphPayload,
-} from "./ts/GraphHelper";
+import { Cell } from "./ts/cell";
+import { CellType } from "./ts/enums/cell.enums";
+import { GraphHelper } from "./ts/GraphHelper";
+import { GraphAction } from "./ts/types/GraphHelper.types";
+import { Graph } from "./ts/types/GraphHelper.types";
+import { GraphActions } from "./ts/enums/GraphHelper.enums";
+import { GraphAlgorithms } from "./ts/enums/GraphHelper.enums";
+import { UpdateGraphPayload } from "./ts/interfaces/GraphHelper.interfaces";
+import { SetGraphPayload } from "./ts/interfaces/GraphHelper.interfaces";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
 import { AlertMessage } from "./components/AlertMessage";
-import { DijkstraState, dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
+import { dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
+import { DijkstraState } from "./ts/DijkstraState";
 import { generateMaze } from "./ts/RecursiveBacktracking";
 
 import shuffleIcon from "./assets/icons/shuffleSolid.svg";
 import OverlayDisable from "./components/OverlayDisable";
-
-const ROWS = 21;
+import { TraceAnimationSpeed } from "./ts/enums/animation.enums";
 
 // ---------------------------------------------------------
 // DO NOT CHANGE!!!
-// TODO: Make columns dynamic. As of now, must be hard coded
-//       because of CSS styling
+// TODO: Make columns and rows dynamic. As of now, must be
+//  hard coded because of CSS styling
+const ROWS = 21;
 const COLS = 41;
 // ---------------------------------------------------------
 
@@ -90,12 +90,6 @@ const initialGraph: Graph = {
   finishCell: undefined,
   graph: [],
 };
-
-enum TraceAnimationSpeed {
-  SPEED_ONE = 50,
-  SPEED_TWO = 25,
-  SPEED_THREE = 5,
-}
 
 function App() {
   const [graph, dispatch] = useReducer(graphReducer, initialGraph);

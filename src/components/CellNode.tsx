@@ -1,4 +1,4 @@
-import { CellType } from "../ts/cell";
+import { CellType } from "../ts/enums/cell.enums";
 import "./CellNode.css";
 
 export const CellNode = ({

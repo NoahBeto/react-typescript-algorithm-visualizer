@@ -1,3 +1,5 @@
+import { CellType } from "./enums/cell.enums";
+
 export class Cell {
   posRow: number;
   posCol: number;
@@ -8,14 +10,4 @@ export class Cell {
     this.posCol = posCol;
     this.cellType = cellType;
   }
-}
-
-// The different types of Cells
-export enum CellType {
-  Normal = "cell-normal",
-  Wall = "cell-wall",
-  Start = "cell-start",
-  Finish = "cell-finish",
-  Highlight = "cell-highlight",
-  SubtleHighlight = "cell-subtle-highlight",
 }

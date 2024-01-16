@@ -1,13 +1,8 @@
-import { GraphHelper, Graph } from "./GraphHelper";
+import { GraphHelper } from "./GraphHelper";
+import { Graph } from "./types/GraphHelper.types";
 import { PriorityQueue } from "./PriorityQueue";
-import { Cell, CellType } from "./cell";
-
-export interface DijkstraState {
-  selectedCellTypeToPlace: CellType;
-  distances: { [key: string]: number } | undefined;
-  path: Cell[] | undefined;
-  visited: Cell[] | undefined;
-}
+import { Cell } from "./cell";
+import { DijkstraState } from "./interfaces/Dijkstra.interfaces";
 
 export const dijkstra = (
   graph: Graph

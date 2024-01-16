@@ -1,50 +1,6 @@
-import { Cell, CellType } from "./cell";
-
-export type Graph = {
-  startCell: Cell | undefined;
-  finishCell: Cell | undefined;
-  graph: Cell[][];
-};
-
-export enum GraphAlgorithms {
-  Dijkstra = "Dijkstra",
-  Astar = "A*",
-}
-
-export enum GraphActions {
-  SetGraph,
-  UpdateCell,
-  InitializeGraph,
-}
-
-export interface SetGraphPayload {
-  graph: Cell[][];
-}
-
-export interface UpdateGraphPayload {
-  row: number;
-  col: number;
-  cellType: CellType;
-}
-
-interface InitializeGraphPayload {
-  rows: number;
-  columns: number;
-}
-
-export type GraphAction =
-  | {
-      type: GraphActions.SetGraph;
-      payload: SetGraphPayload;
-    }
-  | {
-      type: GraphActions.UpdateCell;
-      payload: UpdateGraphPayload;
-    }
-  | {
-      type: GraphActions.InitializeGraph;
-      payload: InitializeGraphPayload;
-    };
+import { Cell } from "./cell";
+import { CellType } from "./enums/cell.enums";
+import { Graph } from "./types/GraphHelper.types";
 
 export class GraphHelper {
   static generateGraph(rows: number, cols: number): Cell[][] {
