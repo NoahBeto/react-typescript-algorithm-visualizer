@@ -274,7 +274,7 @@ function App() {
   // finish cell have been chosen, then the function checks to see
   // which algorithm is chosen, and attempts to run the algorithm,
   // and animate the graph.
-  const handleGoButton = (): void => {
+  const handleVisualizeBtn = (): void => {
     if (!graph.startCell || !graph.finishCell) {
       setModalMessage("Please place a start and finish cell");
       setIsModalOpen(true);
@@ -282,7 +282,9 @@ function App() {
     }
 
     // if the user reruns the visualizer, we need to reset
-    // all of the cells that are not walls, start, or finish
+    // all of the cells that are not walls, start, or finish,
+    // so cells that are highlighted showing the path trace or
+    // search trace.
     setAllCellsToNormalExceptWallsStartFinish();
     switch (currentAlgorithm) {
       case GraphAlgorithms.Dijkstra:
@@ -378,7 +380,9 @@ function App() {
     setOverlayDisable(true);
     const res = generateMaze(ROWS, COLS);
 
-    // set graph to all walls
+    // set graph to all walls and reset start and finish cell
+    graph.startCell = undefined;
+    graph.finishCell = undefined;
     let _data: SetGraphPayload = {
       graph: GraphHelper.generateAllWallGraph(ROWS, COLS),
     };
@@ -390,12 +394,9 @@ function App() {
     // animate recurrsive backtracking
     for (const cell of res.steps) {
       updateCell(cell.posRow, cell.posCol, CellStyles.Normal, cell.cellType);
-      await new Promise((resolve) => setTimeout(resolve, traceMazeGenerationSpeed));
-      if (
-        cell.posRow === graph.finishCell?.posRow &&
-        cell.posCol === graph.finishCell?.posCol
-      )
-        break;
+      await new Promise((resolve) =>
+        setTimeout(resolve, traceMazeGenerationSpeed)
+      );
     }
 
     let data: SetGraphPayload = {
@@ -436,7 +437,10 @@ function App() {
           message={modalMessage}
         ></AlertMessage>
         <div className="navbar">
-          <button className="visualize-btn" onClick={() => handleGoButton()}>
+          <button
+            className="visualize-btn"
+            onClick={() => handleVisualizeBtn()}
+          >
             VISUALIZE
           </button>
           <button
