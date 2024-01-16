@@ -1,4 +1,4 @@
-import { Cell, CellStyles, CellType } from "./cell";
+import { Cell, CellType } from "./cell";
 
 export const generateMaze = (
   rows: number,
@@ -10,7 +10,7 @@ export const generateMaze = (
   for (let i = 0; i < rows; i++) {
     const row: Cell[] = [];
     for (let j = 0; j < cols; j++) {
-      row.push(new Cell(i, j, CellType.Wall, CellStyles.Wall));
+      row.push(new Cell(i, j, CellType.Wall));
     }
     maze.push(row);
   }
@@ -27,7 +27,6 @@ export const generateMaze = (
   // chose a starting cell
   const startCell = maze[randomRowIndex][randomColIndex];
   startCell.cellType = CellType.Normal;
-  startCell.cellStyle = CellStyles.Normal;
 
   // recursive backtracking
   const steps: Cell[] = [];
@@ -51,15 +50,11 @@ const recursiveBacktrack = (
 
     if (maze[posRow][posCol].cellType === CellType.Wall) {
       maze[posRow][posCol].cellType = CellType.Normal;
-      maze[posRow][posCol].cellStyle = CellStyles.Normal;
 
       // Carve a path between the current cell and the neighbor
       maze[(posRow + currentCell.posRow) / 2][
         (posCol + currentCell.posCol) / 2
       ].cellType = CellType.Normal;
-      maze[(posRow + currentCell.posRow) / 2][
-        (posCol + currentCell.posCol) / 2
-      ].cellStyle = CellStyles.Normal;
 
       steps.push(currentCell);
       steps.push(

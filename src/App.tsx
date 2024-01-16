@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useState } from "react";
-import { Cell, CellStyles, CellType } from "./ts/cell";
+import { Cell, CellType } from "./ts/cell";
 import {
   GraphAction,
   GraphActions,
@@ -48,7 +48,6 @@ const graphReducer = (state: Graph, action: GraphAction): Graph => {
               colIndex === action.payload.col
                 ? {
                     ...cell,
-                    cellStyle: action.payload.style,
                     cellType: action.payload.cellType,
                   }
                 : cell
@@ -80,7 +79,7 @@ const graphReducer = (state: Graph, action: GraphAction): Graph => {
 };
 
 let dijkstraState: DijkstraState = {
-  selectedCellStyleToPlace: CellStyles.Start,
+  selectedCellTypeToPlace: CellType.Start,
   distances: undefined,
   path: undefined,
   visited: undefined,
@@ -110,8 +109,7 @@ function App() {
     useState<TraceAnimationSpeed>(TraceAnimationSpeed.SPEED_THREE);
 
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
-  const [selectedCellStyleToPlace, setSelectedCellStyleToPlace] =
-    useState<CellStyles>(CellStyles.Normal);
+
   const [selectedCellTypeToPlace, setSelectedCellTypeToPlace] =
     useState<CellType>(CellType.Normal);
 
@@ -142,7 +140,7 @@ function App() {
         cell.cellType === CellType.Start ||
         cell.cellType === CellType.Finish
           ? cell
-          : { ...cell, cellType: CellType.Normal, cellStyle: CellStyles.Normal }
+          : { ...cell, cellType: CellType.Normal }
       )
     );
 
@@ -159,14 +157,12 @@ function App() {
     updateCell(
       graph.startCell!.posRow!,
       graph.startCell!.posCol!,
-      CellStyles.Start,
       CellType.Start
     );
 
     updateCell(
       graph.finishCell!.posRow!,
       graph.finishCell!.posCol!,
-      CellStyles.Finish,
       CellType.Finish
     );
   };
@@ -180,7 +176,7 @@ function App() {
   const handleResetGraphButton = (): void => {
     initializeGraph();
     dijkstraState = {
-      selectedCellStyleToPlace: CellStyles.Start,
+      selectedCellTypeToPlace: CellType.Start,
       distances: undefined,
       path: undefined,
       visited: undefined,
@@ -211,11 +207,7 @@ function App() {
   // Parameters:
   // - cellClicked: The CellStyle to be set to the current cell being placed
   // e.g. CellStyles.Start, CellStyles.Finish.
-  const handleCellTypeToPlace = (
-    style: CellStyles,
-    cellType: CellType
-  ): void => {
-    setSelectedCellStyleToPlace(style);
+  const handleCellTypeToPlace = (cellType: CellType): void => {
     setSelectedCellTypeToPlace(cellType);
   };
 
@@ -225,15 +217,10 @@ function App() {
   // - col: The column index of the cell to be updated.
   // - style: The new style to be assigned to the cell.
   // Return Value: None (dispatches an action to update the grid state)
-  const updateCell = (
-    row: number,
-    col: number,
-    style: CellStyles,
-    cellType: CellType
-  ): void => {
+  const updateCell = (row: number, col: number, cellType: CellType): void => {
     dispatch({
       type: GraphActions.UpdateCell,
-      payload: { row, col, style, cellType },
+      payload: { row, col, cellType },
     });
   };
 
@@ -243,12 +230,7 @@ function App() {
     setOverlayDisable(true);
     // animate dijkstra searching for finish cell
     for (const cell of dijkstraState.visited) {
-      updateCell(
-        cell.posRow,
-        cell.posCol,
-        CellStyles.SubtleHighlight,
-        cell.cellType
-      );
+      updateCell(cell.posRow, cell.posCol, CellType.SubtleHighlight);
       await new Promise((resolve) => setTimeout(resolve, traceSearchSpeed));
       if (
         cell.posRow === graph.finishCell?.posRow &&
@@ -259,7 +241,7 @@ function App() {
 
     // animate shortest path from start to finish cell
     for (const cell of dijkstraState.path) {
-      updateCell(cell.posRow, cell.posCol, CellStyles.Highlight, cell.cellType);
+      updateCell(cell.posRow, cell.posCol, CellType.Highlight);
       await new Promise((resolve) => setTimeout(resolve, tracePathSpeed));
       if (
         cell.posRow === graph.finishCell?.posRow &&
@@ -317,7 +299,6 @@ function App() {
   const handleCellClick = (
     row: number,
     col: number,
-    style?: CellStyles,
     cellType?: CellType
   ): void => {
     if (
@@ -327,11 +308,10 @@ function App() {
       return;
     }
     // set the clicked cell to the desired type
-    style = selectedCellStyleToPlace;
     cellType = selectedCellTypeToPlace;
     dispatch({
       type: GraphActions.UpdateCell,
-      payload: { row, col, style, cellType },
+      payload: { row, col, cellType },
     });
 
     // if the user is currently placing a start cell, then set the
@@ -343,7 +323,6 @@ function App() {
         let data: UpdateGraphPayload = {
           row: graph.startCell.posRow,
           col: graph.startCell.posCol,
-          style: CellStyles.Normal,
           cellType: CellType.Normal,
         };
         dispatch({
@@ -363,7 +342,6 @@ function App() {
         let data: UpdateGraphPayload = {
           row: graph.finishCell.posRow,
           col: graph.finishCell.posCol,
-          style: CellStyles.Normal,
           cellType: CellType.Normal,
         };
         dispatch({
@@ -393,7 +371,7 @@ function App() {
 
     // animate recurrsive backtracking
     for (const cell of res.steps) {
-      updateCell(cell.posRow, cell.posCol, CellStyles.Normal, cell.cellType);
+      updateCell(cell.posRow, cell.posCol, CellType.Normal);
       await new Promise((resolve) =>
         setTimeout(resolve, traceMazeGenerationSpeed)
       );
@@ -564,9 +542,7 @@ function App() {
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() =>
-                handleCellTypeToPlace(CellStyles.Start, CellType.Start)
-              }
+              onClick={() => handleCellTypeToPlace(CellType.Start)}
             >
               <div className="cell-start selector-icon"></div>
               <div>Set Start Cell</div>
@@ -577,9 +553,7 @@ function App() {
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() =>
-                handleCellTypeToPlace(CellStyles.Finish, CellType.Finish)
-              }
+              onClick={() => handleCellTypeToPlace(CellType.Finish)}
             >
               <div className="cell-finish selector-icon"></div>
               <div>Set Finish Cell</div>
@@ -590,9 +564,7 @@ function App() {
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() =>
-                handleCellTypeToPlace(CellStyles.Wall, CellType.Wall)
-              }
+              onClick={() => handleCellTypeToPlace(CellType.Wall)}
             >
               <div className="cell-wall selector-icon "></div>
               <div>Set Wall Cell</div>
@@ -603,9 +575,7 @@ function App() {
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() =>
-                handleCellTypeToPlace(CellStyles.Normal, CellType.Normal)
-              }
+              onClick={() => handleCellTypeToPlace(CellType.Normal)}
             >
               <div className="cell-normal selector-icon "></div>
               <div>Set Normal Cell</div>
@@ -684,7 +654,7 @@ function App() {
             row.map((item) => (
               <CellNode
                 key={`${item.posRow}-${item.posCol}`}
-                cellStyles={item.cellStyle}
+                cellType={item.cellType}
                 row={item.posRow}
                 col={item.posCol}
                 onMouseDown={handleCellClick}

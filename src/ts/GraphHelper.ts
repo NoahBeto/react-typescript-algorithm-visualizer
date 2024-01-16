@@ -1,4 +1,4 @@
-import { Cell, CellStyles, CellType } from "./cell";
+import { Cell, CellType } from "./cell";
 
 export type Graph = {
   startCell: Cell | undefined;
@@ -24,7 +24,6 @@ export interface SetGraphPayload {
 export interface UpdateGraphPayload {
   row: number;
   col: number;
-  style: CellStyles;
   cellType: CellType;
 }
 
@@ -61,13 +60,6 @@ export class GraphHelper {
           posRow: i,
           posCol: j,
           cellType: CellType.Normal,
-          cellStyle: CellStyles.Normal,
-          g: 0,
-          h: 0,
-          f: 0,
-          parent: undefined,
-          isOnOpenList: undefined,
-          isOnClosedList: undefined,
         });
       }
       res.push(row);
@@ -88,13 +80,6 @@ export class GraphHelper {
           posRow: i,
           posCol: j,
           cellType: CellType.Wall,
-          cellStyle: CellStyles.Wall,
-          g: 0,
-          h: 0,
-          f: 0,
-          parent: undefined,
-          isOnOpenList: undefined,
-          isOnClosedList: undefined,
         });
       }
       res.push(row);

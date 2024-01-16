@@ -1,20 +1,20 @@
-import { CellStyles } from "../ts/cell";
+import { CellType } from "../ts/cell";
 import "./CellNode.css";
 
 export const CellNode = ({
-  cellStyles,
+  cellType,
   row,
   col,
   onMouseDown,
   _onMouseEnter,
 }: {
-  cellStyles: CellStyles;
+  cellType: CellType;
   row: number;
   col: number;
-  onMouseDown: (row: number, col: number, style?: CellStyles) => void;
+  onMouseDown: (row: number, col: number, style?: CellType) => void;
   _onMouseEnter: (row: number, col: number) => void;
 }) => {
-  const styles = `cell ${cellStyles}`;
+  const styles = `cell ${cellType}`;
 
   const handleDivClick = () => {
     onMouseDown(row, col);

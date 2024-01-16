@@ -1,9 +1,9 @@
 import { GraphHelper, Graph } from "./GraphHelper";
 import { PriorityQueue } from "./PriorityQueue";
-import { Cell, CellStyles } from "./cell";
+import { Cell, CellType } from "./cell";
 
 export interface DijkstraState {
-  selectedCellStyleToPlace: CellStyles;
+  selectedCellTypeToPlace: CellType;
   distances: { [key: string]: number } | undefined;
   path: Cell[] | undefined;
   visited: Cell[] | undefined;
