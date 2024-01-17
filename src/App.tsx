@@ -1,6 +1,4 @@
 import { useReducer, useEffect, useState } from "react";
-import { TCell } from "./ts/types/Cell.types";
-import { ECellType } from "./ts/enums/cell.enums";
 import { GraphHelper } from "./ts/GraphHelper";
 import { TGraphAction } from "./ts/types/GraphHelper.types";
 import { TGraph } from "./ts/types/GraphHelper.types";
@@ -11,13 +9,14 @@ import { TSetGraphPayload } from "./ts/types/GraphHelper.types";
 import "./App.css";
 import { CellNode } from "./components/CellNode";
 import { AlertMessage } from "./components/AlertMessage";
-import { dijkstra, dijkstraBackTrack } from "./ts/Dijkstra";
-import { TDijkstraState } from "./ts/types/Dijkstra.types";
 import { generateMaze } from "./ts/RecursiveBacktracking";
 
 import shuffleIcon from "./assets/icons/shuffleSolid.svg";
 import OverlayDisable from "./components/OverlayDisable";
 import { ETraceAnimationSpeed } from "./ts/enums/animation.enums";
+import { GenericGraph } from "./ts/GenericGraph";
+import { EGenericCellType } from "./ts/types/GenericCell.types";
+import { TCell } from "./ts/types/Cell.types";
 
 // ---------------------------------------------------------
 // DO NOT CHANGE!!!
@@ -76,13 +75,6 @@ const graphReducer = (state: TGraph, action: TGraphAction): TGraph => {
   }
 };
 
-let dijkstraState: TDijkstraState = {
-  selectedCellTypeToPlace: ECellType.Start,
-  distances: undefined,
-  path: undefined,
-  visited: undefined,
-};
-
 const initialGraph: TGraph = {
   startCell: undefined,
   finishCell: undefined,
@@ -102,7 +94,7 @@ function App() {
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false);
 
   const [selectedCellTypeToPlace, setSelectedCellTypeToPlace] =
-    useState<ECellType>(ECellType.Normal);
+    useState<EGenericCellType>(EGenericCellType.NORMAL);
 
   const [currentAlgorithm, setCurrentAlgorithm] =
     useState<EGraphAlgorithms | null>(null);
@@ -127,11 +119,11 @@ function App() {
   const setAllCellsToNormalExceptWallsStartFinish = () => {
     const updatedGraphWithoutWalls: TCell[][] = graph.graph.map((row) =>
       row.map((cell) =>
-        cell.cellType === ECellType.Wall ||
-        cell.cellType === ECellType.Start ||
-        cell.cellType === ECellType.Finish
+        cell.cellType === EGenericCellType.WALL ||
+        cell.cellType === EGenericCellType.START ||
+        cell.cellType === EGenericCellType.FINISH
           ? cell
-          : { ...cell, cellType: ECellType.Normal }
+          : { ...cell, cellType: EGenericCellType.NORMAL }
       )
     );
 
@@ -148,13 +140,13 @@ function App() {
     updateCell(
       graph.startCell!.posRow!,
       graph.startCell!.posCol!,
-      ECellType.Start
+      EGenericCellType.START
     );
 
     updateCell(
       graph.finishCell!.posRow!,
       graph.finishCell!.posCol!,
-      ECellType.Finish
+      EGenericCellType.FINISH
     );
   };
 
@@ -166,12 +158,6 @@ function App() {
   // Handles resetting the graph to initial state
   const handleResetGraphButton = (): void => {
     initializeGraph();
-    dijkstraState = {
-      selectedCellTypeToPlace: ECellType.Start,
-      distances: undefined,
-      path: undefined,
-      visited: undefined,
-    };
   };
 
   // Handle clicking the desired path finding algorithm
@@ -198,7 +184,7 @@ function App() {
   // Parameters:
   // - cellClicked: The CellStyle to be set to the current cell being placed
   // e.g. CellStyles.Start, CellStyles.Finish.
-  const handleCellTypeToPlace = (cellType: ECellType): void => {
+  const handleCellTypeToPlace = (cellType: EGenericCellType): void => {
     setSelectedCellTypeToPlace(cellType);
   };
 
@@ -208,7 +194,11 @@ function App() {
   // - col: The column index of the cell to be updated.
   // - type: The new type to be assigned to the cell.
   // Return Value: None (dispatches an action to update the grid state)
-  const updateCell = (row: number, col: number, cellType: ECellType): void => {
+  const updateCell = (
+    row: number,
+    col: number,
+    cellType: EGenericCellType
+  ): void => {
     dispatch({
       type: EGraphActions.UpdateCell,
       payload: { row, col, cellType },
@@ -220,11 +210,12 @@ function App() {
   const handleCellClick = (
     row: number,
     col: number,
-    cellType?: ECellType
+    cellType?: EGenericCellType
   ): void => {
     if (
-      GraphHelper.getCell(graph, row, col).cellType === ECellType.Start ||
-      GraphHelper.getCell(graph, row, col).cellType === ECellType.Finish
+      GraphHelper.getCell(graph, row, col).cellType ===
+        EGenericCellType.START ||
+      GraphHelper.getCell(graph, row, col).cellType === EGenericCellType.FINISH
     ) {
       return;
     }
@@ -238,13 +229,13 @@ function App() {
     // if the user is currently placing a start cell, then set the
     // previous start cell to normal, and update the clicked cell
     // to a start cell
-    if (cellType === ECellType.Start) {
+    if (cellType === EGenericCellType.START) {
       // update previous start cell
       if (graph.startCell !== undefined) {
         let data: TUpdateCellPayload = {
           row: graph.startCell.posRow,
           col: graph.startCell.posCol,
-          cellType: ECellType.Normal,
+          cellType: EGenericCellType.NORMAL,
         };
         dispatch({
           type: EGraphActions.UpdateCell,
@@ -257,13 +248,13 @@ function App() {
     // if the user is currently placing a finsh cell, then set the
     // previous finish cell to normal, and update the clicked cell
     // to a finish cell
-    else if (cellType === ECellType.Finish) {
+    else if (cellType === EGenericCellType.FINISH) {
       // update previous finish cell
       if (graph.finishCell !== undefined) {
         let data: TUpdateCellPayload = {
           row: graph.finishCell.posRow,
           col: graph.finishCell.posCol,
-          cellType: ECellType.Normal,
+          cellType: EGenericCellType.NORMAL,
         };
         dispatch({
           type: EGraphActions.UpdateCell,
@@ -293,22 +284,20 @@ function App() {
     setAllCellsToNormalExceptWallsStartFinish();
     switch (currentAlgorithm) {
       case EGraphAlgorithms.Dijkstra:
-        let res: {
-          distances: { [key: string]: number };
-          visited: TCell[];
-        };
+        const genericGraphInstance = new GenericGraph({
+          importedGraph: graph,
+          rows: ROWS,
+          cols: COLS,
+        });
+        let res;
         try {
-          res = dijkstra(graph);
+          res = genericGraphInstance.dijkstra();
         } catch (error) {
-          setModalMessage("No path from start cell to finish cell");
+          setModalMessage("No path found");
           setIsModalOpen(true);
-          return;
+          break;
         }
-
-        dijkstraState.distances = res.distances;
-        dijkstraState.visited = res.visited;
-        dijkstraState.path = dijkstraBackTrack(graph, dijkstraState);
-        animateDijkstra();
+        animateDijkstra(res.visited, res.shortestPath);
         break;
 
       default:
@@ -317,13 +306,11 @@ function App() {
     }
   };
 
-  const animateDijkstra = async () => {
-    if (!dijkstraState.visited || !dijkstraState.path) return;
-
+  const animateDijkstra = async (visited: TCell[], shortestPath: TCell[]) => {
     setOverlayDisable(true);
     // animate dijkstra searching for finish cell
-    for (const cell of dijkstraState.visited) {
-      updateCell(cell.posRow, cell.posCol, ECellType.SubtleHighlight);
+    for (const cell of visited) {
+      updateCell(cell.posRow, cell.posCol, EGenericCellType.SUBTLEHIGHLIGHT);
       await new Promise((resolve) => setTimeout(resolve, traceSearchSpeed));
       if (
         cell.posRow === graph.finishCell?.posRow &&
@@ -333,8 +320,8 @@ function App() {
     }
 
     // animate shortest path from start to finish cell
-    for (const cell of dijkstraState.path) {
-      updateCell(cell.posRow, cell.posCol, ECellType.Highlight);
+    for (const cell of shortestPath) {
+      updateCell(cell.posRow, cell.posCol, EGenericCellType.HIGHLIGHT);
       await new Promise((resolve) => setTimeout(resolve, tracePathSpeed));
       if (
         cell.posRow === graph.finishCell?.posRow &&
@@ -362,7 +349,7 @@ function App() {
 
     // animate recurrsive backtracking
     for (const cell of res.steps) {
-      updateCell(cell.posRow, cell.posCol, ECellType.Normal);
+      updateCell(cell.posRow, cell.posCol, EGenericCellType.NORMAL);
       await new Promise((resolve) =>
         setTimeout(resolve, traceMazeGenerationSpeed)
       );
@@ -529,44 +516,44 @@ function App() {
           <div className="start-end-selector-container">
             <div
               className={`selector  ${
-                selectedCellTypeToPlace === ECellType.Start
+                selectedCellTypeToPlace === EGenericCellType.START
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() => handleCellTypeToPlace(ECellType.Start)}
+              onClick={() => handleCellTypeToPlace(EGenericCellType.START)}
             >
               <div className="cell-start selector-icon"></div>
               <div>Set Start Cell</div>
             </div>
             <div
               className={`selector  ${
-                selectedCellTypeToPlace === ECellType.Finish
+                selectedCellTypeToPlace === EGenericCellType.FINISH
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() => handleCellTypeToPlace(ECellType.Finish)}
+              onClick={() => handleCellTypeToPlace(EGenericCellType.FINISH)}
             >
               <div className="cell-finish selector-icon"></div>
               <div>Set Finish Cell</div>
             </div>
             <div
               className={`selector  ${
-                selectedCellTypeToPlace === ECellType.Wall
+                selectedCellTypeToPlace === EGenericCellType.WALL
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() => handleCellTypeToPlace(ECellType.Wall)}
+              onClick={() => handleCellTypeToPlace(EGenericCellType.WALL)}
             >
               <div className="cell-wall selector-icon "></div>
               <div>Set Wall Cell</div>
             </div>
             <div
               className={`selector  ${
-                selectedCellTypeToPlace === ECellType.Normal
+                selectedCellTypeToPlace === EGenericCellType.NORMAL
                   ? "selector-highlight"
                   : "selector-normal"
               }`}
-              onClick={() => handleCellTypeToPlace(ECellType.Normal)}
+              onClick={() => handleCellTypeToPlace(EGenericCellType.NORMAL)}
             >
               <div className="cell-normal selector-icon "></div>
               <div>Set Normal Cell</div>
@@ -644,7 +631,7 @@ function App() {
           {graph.graph.map((row) =>
             row.map((item) => (
               <CellNode
-                key={`${item.posRow}-${item.posCol}`}
+                key={`${item.posCol}-${item.posRow}`}
                 cellType={item.cellType}
                 row={item.posRow}
                 col={item.posCol}

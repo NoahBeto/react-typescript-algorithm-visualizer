@@ -1,7 +1,7 @@
-import { ECellType } from "../enums/cell.enums";
+import { EGenericCellType } from "./GenericCell.types";
 
 export type TCell = {
   posRow: number;
   posCol: number;
-  cellType: ECellType;
+  cellType: EGenericCellType;
 };
