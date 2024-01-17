@@ -14,8 +14,6 @@ export const CellNode = ({
   onMouseDown: (row: number, col: number, style?: EGenericCellType) => void;
   _onMouseEnter: (row: number, col: number) => void;
 }) => {
-  const styles = `cell ${cellType}`;
-
   const handleDivClick = () => {
     onMouseDown(row, col);
   };
@@ -27,7 +25,7 @@ export const CellNode = ({
   return (
     <>
       <div
-        className={styles}
+        className={`cell ${cellType}`}
         onMouseDown={handleDivClick}
         onMouseEnter={handleMouseEnter}
       ></div>
