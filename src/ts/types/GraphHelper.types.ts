@@ -1,6 +1,6 @@
 import { TCell } from "./Cell.types";
 import { EGraphActions } from "../enums/GraphHelper.enums";
-import { ECellType } from "../enums/cell.enums";
+import { EGenericCellType } from "./GenericCell.types";
 
 export type TGraph = {
   startCell: TCell | undefined;
@@ -29,7 +29,7 @@ export type TSetGraphPayload = {
 export type TUpdateCellPayload = {
   row: number;
   col: number;
-  cellType: ECellType;
+  cellType: EGenericCellType;
 };
 
 export type TInitializeGraphPayload = {
