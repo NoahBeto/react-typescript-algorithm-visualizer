@@ -355,7 +355,7 @@ function App() {
     // animate astar tracing shortest path
     for (const cell of shortestPath) {
       updateCell(cell.posRow, cell.posCol, EGenericCellType.HIGHLIGHT);
-      await new Promise((resolve) => setTimeout(resolve, traceSearchSpeed));
+      await new Promise((resolve) => setTimeout(resolve, tracePathSpeed));
       if (
         cell.posRow === graph.finishCell?.posRow &&
         cell.posCol === graph.finishCell?.posCol
