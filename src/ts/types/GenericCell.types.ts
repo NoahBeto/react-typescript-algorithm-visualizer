@@ -1,6 +1,7 @@
 export type TGenericCellConstructor = {
   position: TCoords;
   type: EGenericCellType;
+  weight: number;
 };
 
 export type TGenericCell = {
