@@ -282,13 +282,14 @@ function App() {
     // so cells that are highlighted showing the path trace or
     // search trace.
     setAllCellsToNormalExceptWallsStartFinish();
+
+    const genericGraphInstance = new GenericGraph({
+      importedGraph: graph,
+      rows: ROWS,
+      cols: COLS,
+    });
     switch (currentAlgorithm) {
       case EGraphAlgorithms.Dijkstra:
-        const genericGraphInstance = new GenericGraph({
-          importedGraph: graph,
-          rows: ROWS,
-          cols: COLS,
-        });
         let res;
         try {
           res = genericGraphInstance.dijkstra();
@@ -298,6 +299,12 @@ function App() {
           break;
         }
         animateDijkstra(res.visited, res.shortestPath);
+        break;
+      case EGraphAlgorithms.Astar:
+        console.log("astar");
+        let astarRes: { shortestPath: TCell[]; visited: TCell[] } =
+          genericGraphInstance.astar();
+        animateAstar(astarRes.shortestPath, astarRes.visited);
         break;
 
       default:
@@ -329,6 +336,33 @@ function App() {
       )
         break;
     }
+    setOverlayDisable(false);
+  };
+
+  const animateAstar = async (shortestPath: TCell[], visited: TCell[]) => {
+    setOverlayDisable(true);
+    // animate astar searching for finish cell
+    for (const cell of visited) {
+      updateCell(cell.posRow, cell.posCol, EGenericCellType.SUBTLEHIGHLIGHT);
+      await new Promise((resolve) => setTimeout(resolve, traceSearchSpeed));
+      if (
+        cell.posRow === graph.finishCell?.posRow &&
+        cell.posCol === graph.finishCell?.posCol
+      )
+        break;
+    }
+
+    // animate astar tracing shortest path
+    for (const cell of shortestPath) {
+      updateCell(cell.posRow, cell.posCol, EGenericCellType.HIGHLIGHT);
+      await new Promise((resolve) => setTimeout(resolve, traceSearchSpeed));
+      if (
+        cell.posRow === graph.finishCell?.posRow &&
+        cell.posCol === graph.finishCell?.posCol
+      )
+        break;
+    }
+
     setOverlayDisable(false);
   };
 
@@ -420,12 +454,12 @@ function App() {
               >
                 Dijkstra
               </div>
-              {/* <div
+              <div
                 className="dropdown-item"
-                onClick={() => handleChooseAlgorithm(GraphAlgorithms.Astar)}
+                onClick={() => handleSelectAlgorithmBtn(EGraphAlgorithms.Astar)}
               >
                 A*
-              </div> */}
+              </div>
             </div>
           </div>
 

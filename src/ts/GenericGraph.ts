@@ -8,6 +8,7 @@ import { GenericCell } from "./GenericCell";
 import { EGenericCellType, TCoords } from "./types/GenericCell.types";
 import { TGraph } from "./types/GraphHelper.types";
 import { TCell } from "./types/Cell.types";
+import { Astar } from "./Astar";
 
 export class GenericGraph {
   importedGraph: TGraph;
@@ -34,6 +35,7 @@ export class GenericGraph {
         y: this.importedGraph.startCell!.posRow,
       },
       type: EGenericCellType.FINISH,
+      weight: 1,
     });
     this.finishCell = new GenericCell({
       position: {
@@ -41,6 +43,7 @@ export class GenericGraph {
         y: this.importedGraph.finishCell!.posRow,
       },
       type: EGenericCellType.FINISH,
+      weight: 1,
     });
     this.diagonalAllowed = args.diagonalAllowed || false;
     this.heuristic = args.heuristic || EHeuristic.MANHATTEN;
@@ -149,6 +152,38 @@ export class GenericGraph {
     return path;
   };
 
+  astar = (): { shortestPath: TCell[]; visited: TCell[] } => {
+    this.initializeGraph();
+    let astarInstance = new Astar({
+      graph: this.graph,
+      startCell: this.startCell!,
+      finishCell: this.finishCell!,
+      heuristic: EHeuristic.MANHATTEN,
+      closest: false,
+    });
+    let res: { shortestPath: GenericCell[]; visited: GenericCell[] } =
+      astarInstance.search();
+
+    let newShortestPath: TCell[] = [];
+    for (let i = 0; i < res.shortestPath.length; i++) {
+      newShortestPath.push({
+        posRow: res.shortestPath[i].getPosition().y,
+        posCol: res.shortestPath[i].getPosition().x,
+        cellType: res.shortestPath[i].getType(),
+      });
+    }
+
+    let newVisited: TCell[] = [];
+    for (let i = 0; i < res.visited.length; i++) {
+      newVisited.push({
+        posRow: res.visited[i].getPosition().y,
+        posCol: res.visited[i].getPosition().x,
+        cellType: res.visited[i].getType(),
+      });
+    }
+    return { shortestPath: newShortestPath, visited: newVisited };
+  };
+
   getCell = (coords: TCoords): GenericCell | undefined => {
     if (
       coords.y < 0 ||
@@ -202,6 +237,7 @@ export class GenericGraph {
           new GenericCell({
             position: { x: j, y: i },
             type: this.importedGraph.graph[i][j].cellType,
+            weight: 1,
           })
         );
       }
