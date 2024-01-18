@@ -301,9 +301,15 @@ function App() {
         animateDijkstra(res.visited, res.shortestPath);
         break;
       case EGraphAlgorithms.Astar:
-        console.log("astar");
         let astarRes: { shortestPath: TCell[]; visited: TCell[] } =
           genericGraphInstance.astar();
+        console.log(astarRes.shortestPath);
+
+        if (astarRes.shortestPath.length === 0) {
+          setModalMessage("No path found");
+          setIsModalOpen(true);
+          break;
+        }
         animateAstar(astarRes.shortestPath, astarRes.visited);
         break;
 
