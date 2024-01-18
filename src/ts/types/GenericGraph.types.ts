@@ -1,6 +1,5 @@
 import { GenericCell } from "../GenericCell";
 import { EHeuristic } from "../enums/GenericGraph.enums";
-import { TCoords } from "./GenericCell.types";
 import { TGraph } from "./GraphHelper.types";
 
 export type TGenericGraphConstructor = {

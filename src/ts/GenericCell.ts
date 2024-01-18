@@ -8,7 +8,6 @@ export class GenericCell {
   // generic attributes
   private position: TCoords;
   private type!: EGenericCellType;
-  private walkable!: boolean;
 
   // astar attributes
   private f: number;
@@ -106,9 +105,6 @@ export class GenericCell {
 
   setType = (type: EGenericCellType) => {
     this.type = type;
-
-    if (this.type === EGenericCellType.WALL) this.walkable = false;
-    else this.walkable = true;
   };
 
   isWalkable = (): boolean => {
