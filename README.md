@@ -13,6 +13,7 @@ To run the application locally, follow these steps:
 2. Navigate to project directory and install dependencies:
    
    cd algorithm-visualizer
+   
    npm install
 
 4. Run the application in development mode:
