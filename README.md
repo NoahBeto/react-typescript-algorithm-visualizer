@@ -17,7 +17,7 @@ To run the application locally, follow these steps:
 3. Run the application in development mode:
     npm run dev
 
-Usage
+## Usage
 Once the application is running, users can perform the following actions:
 
 Place a start and finish cell to define the start and end points for the algorithm.
@@ -26,11 +26,13 @@ Adjust the visualization speed for the algorithm search and shortest path tracin
 Generate and visualize maze generation algorithms.
 Adjust the visualization speed for maze generation.
 Clear the graph and start over.
-Technologies Used
+
+## Technologies Used
 React
 TypeScript
 Vite
-Contributing
+
+## Contributing
 Contributions to Algorithm Visualizer are welcome! If you'd like to contribute, please follow these steps:
 
 Fork the repository.
@@ -39,5 +41,7 @@ Make your changes.
 Commit your changes (git commit -am 'Add new feature').
 Push to the branch (git push origin feature/new-feature).
 Create a new Pull Request.
-License
+
+
+## License
 This project is licensed under the MIT License.
