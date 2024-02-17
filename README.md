@@ -11,10 +11,12 @@ To run the application locally, follow these steps:
    git clone https://github.com/your-username/algorithm-visualizer.git
 
 2. Navigate to project directory and install dependencies:
+   
    cd algorithm-visualizer
    npm install
 
 4. Run the application in development mode:
+   
     npm run dev
 
 ## Usage
