@@ -14,7 +14,7 @@ To run the application locally, follow these steps:
    cd algorithm-visualizer
    npm install
 
-3. Run the application in development mode:
+4. Run the application in development mode:
     npm run dev
 
 ## Usage
