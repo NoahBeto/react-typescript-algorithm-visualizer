@@ -19,13 +19,15 @@
   height: 100vh;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
   gap: 5px;
+  overflow: hidden; /* prevents body scroll fights */
 }
 
 .navbar {
   height: 100%;
   min-width: 225px;
+  width: 260px; /* stable width on desktop */
   background: var(--static5);
   display: flex;
   flex-direction: column;
@@ -33,6 +35,7 @@
   align-items: stretch;
   gap: 1rem;
   padding: 1rem;
+  overflow-y: auto; /* allow sidebar to scroll on small screens */
 }
 
 /* Button Styles */
@@ -47,18 +50,6 @@
   animation: btnHoverGlowOut 0.5s;
 }
 
-/* Speed selector styles */
-ul {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-}
-
-ul li {
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-}
-
 .reset-graph {
   background: var(--static3);
   border: none;
@@ -70,6 +61,18 @@ ul li {
 
 .visualize-btn:hover {
   animation: btnHoverGlowIn 0.5s forwards;
+}
+
+/* Speed selector styles */
+ul {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+ul li {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
 }
 
 /* Dropdown Styles */
@@ -143,21 +146,6 @@ ul li {
 }
 
 /* Selector Styles */
-.visualize-btn {
-  font-size: 1rem;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  background: var(--primary);
-  border: none;
-  box-shadow: 1px 1px 20px #3b93f71d;
-  color: var(--text);
-  animation: btnHoverGlowOut 0.5s;
-}
-
-.visualize-btn:hover {
-  animation: btnHoverGlowIn 0.5s forwards;
-}
-
 .start-end-selector-container {
   display: flex;
   flex-direction: column;
@@ -190,19 +178,97 @@ ul li {
   transition: 0.25s;
 }
 
+/* Helps selector rows wrap nicely if needed */
+.selector-row {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.selector-row li {
+  flex: 1 0 auto;
+  text-align: center;
+}
+
 /* Graph Styles */
+/* Outer container handles scrolling on any device */
+.graphOuter {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px;
+}
+
+/* Actual grid */
 .graphWrapper {
   display: grid;
-  grid-template-columns: repeat(41, minmax(40px, 1fr));
-  grid-template-rows: repeat(21, minmax(40px, 1fr));
-  overflow: scroll;
+
+  /* IMPORTANT: Use CSS variable cell size so it can scale on mobile */
+  grid-template-columns: repeat(41, var(--cellSize));
+  grid-template-rows: repeat(21, var(--cellSize));
+
   margin-inline: auto;
+}
+
+/* Default cell size (desktop) */
+:root {
+  --cellSize: 40px;
+}
+
+/* Tablet: slightly smaller cells */
+@media (max-width: 1024px) {
+  :root {
+    --cellSize: 34px;
+  }
+
+  .navbar {
+    width: 240px;
+    min-width: 200px;
+  }
+}
+
+/* Phone: stack controls above grid and shrink cells */
+@media (max-width: 768px) {
+  .wrapper {
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .navbar {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    max-height: 46vh; /* controls scroll if they exceed screen */
+    border-radius: 0;
+  }
+
+  .graphOuter {
+    height: auto;
+    flex: 1;
+    width: 100%;
+  }
+
+  :root {
+    --cellSize: 26px;
+  }
+}
+
+/* Small phones: even smaller */
+@media (max-width: 420px) {
+  :root {
+    --cellSize: 22px;
+  }
+
+  ul li {
+    padding: 0.5rem 0.75rem;
+  }
 }
 
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
   background: var(--static-3);
   width: 7px;
+  height: 7px;
   border-radius: 7px;
 }
 
