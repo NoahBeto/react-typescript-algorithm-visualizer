@@ -14,26 +14,25 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(
-    0,
-    0,
-    0,
-    0.4
-  ); /* Semi-transparent black overlay for the blur effect */
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 2000;
+  padding: 16px; /* mobile-safe spacing */
 }
 
 .modal {
   color: var(--text);
   background: #f2f2f2;
-  width: 25%;
-  height: 40%;
+
+  /* Responsive sizing */
+  width: min(520px, 92vw);
+  max-height: min(520px, 86vh);
+
   overflow-y: auto;
   position: relative;
-  z-index: 1100;
+  z-index: 2100;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 0.25rem;
 
@@ -45,7 +44,7 @@
 .modal-content-upper {
   background: rgb(232, 94, 108);
   font-size: 1.5rem;
-  height: 45%;
+  min-height: 160px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,13 +55,13 @@
 }
 
 .modal-content-lower {
-  height: 55%;
   color: black;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  padding: 16px;
 }
 
 .modal-content-lower > span:nth-child(1) {
@@ -81,9 +80,10 @@
 }
 
 .modal-message {
-  word-wrap: normal;
-  margin: none;
+  word-wrap: break-word;
+  margin: 0;
   font-size: 1.25rem;
+  text-align: center;
 }
 
 .close {
@@ -96,4 +96,19 @@
   background: var(--static5);
   padding: 0.25rem 0.5rem;
   border-radius: 4rem;
+}
+
+/* Small screens: make top icon less huge */
+@media (max-width: 420px) {
+  .modal-content-upper > span:nth-child(1) {
+    font-size: 110px;
+  }
+
+  .modal-content-lower > span:nth-child(1) {
+    font-size: 1.6rem;
+  }
+
+  .modal-content-lower > button {
+    width: 100%;
+  }
 }
