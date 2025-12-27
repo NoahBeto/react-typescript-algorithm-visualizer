@@ -1,6 +1,6 @@
 # Algorithm Visualizer
 
-Algorithm Visualizer is a web application built with React and TypeScript that allows users to visualize pathfinding algorithms and maze generation algorithms. The application currently supports Dijkstra's algorithm, A*, and recursive backtracking, with plans to implement more algorithms in the future.
+Algorithm Visualizer is a responsive web application built with React and TypeScript that allows users to visualize pathfinding algorithms and maze generation algorithms across desktop, tablet, and mobile devices. The application currently supports Dijkstra's algorithm, A*, and recursive backtracking, with plans to implement more algorithms in the future.
 
 ## Installation
 
@@ -35,11 +35,19 @@ Adjust the visualization speed for maze generation.
 
 Clear the graph and start over.
 
+## Responsive Design
+
+The application is fully responsive and adapts to different screen sizes, including desktop, tablet, and mobile devices.
+
+- The control panel automatically adjusts or stacks on smaller screens
+- The visualization grid scales appropriately and supports scrolling when necessary
+- Modals and overlays are optimized for mobile usability
 
 ## Technologies Used
 React
 TypeScript
 Vite
+Responsive CSS (Flexbox & Grid)
 
 ## Contributing
 Contributions to Algorithm Visualizer are welcome! If you'd like to contribute, please follow these steps:
@@ -50,7 +58,6 @@ Make your changes.
 Commit your changes (git commit -am 'Add new feature').
 Push to the branch (git push origin feature/new-feature).
 Create a new Pull Request.
-
 
 ## License
 This project is licensed under the MIT License.
